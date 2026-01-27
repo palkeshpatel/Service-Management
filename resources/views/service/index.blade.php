@@ -13,6 +13,15 @@
             text-align: center;
         }
 
+        .service-header h1 {
+            color: white;
+            font-weight: 600;
+        }
+
+        .service-header p {
+            color: white;
+        }
+
         .service-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 2px solid var(--border-color);
@@ -75,27 +84,10 @@
         <div class="container">
 
             <h1 class="display-4 fw-bold mb-3">How can we help you?</h1>
-            <p class="lead">In order to understand the issue properly please provide below details.</p>
+
         </div>
     </div>
 
-    <!-- Intro Section -->
-    <div class="intro-section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <p class="fs-5 text-muted">
-                        Yuvaan Energy Limited provides comprehensive solar panel service and support throughout India.
-                        Our experienced team is dedicated to ensuring your solar installation operates at peak efficiency.
-                        Whether you're experiencing panel damage, junction box issues, or hotspot problems, we're here to
-                        help.
-                        Submit your service request with detailed information and our technical experts will review and
-                        respond promptly.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Services Section -->
     <div class="services-section">
@@ -161,6 +153,24 @@
             </div>
         </div>
     </div>
+    <!-- Intro Section -->
+    <div class="intro-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <p class="fs-5 text-muted">
+                        Yuvaan Energy Limited provides comprehensive solar panel service and support throughout India.
+                        Our experienced team is dedicated to ensuring your solar installation operates at peak efficiency.
+                        Whether you're experiencing panel damage, junction box issues, or hotspot problems, we're here to
+                        help.
+                        Submit your service request with detailed information and our technical experts will review and
+                        respond promptly.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Contact Info Section -->
     <div class="contact-info">
