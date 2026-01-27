@@ -47,6 +47,183 @@
         border-radius: 5px;
         font-size: 0.9rem;
     }
+    .upload-button-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 10px;
+    }
+    .upload-btn-custom {
+        border: 2px dashed var(--border-color);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: var(--bg-color);
+        position: relative;
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .upload-btn-custom:hover {
+        border-color: var(--primary-color);
+        background: rgba(96, 29, 87, 0.05);
+    }
+    .upload-btn-custom input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        z-index: 2;
+    }
+    .upload-btn-custom.has-file {
+        border-color: var(--primary-color);
+        background: rgba(96, 29, 87, 0.1);
+        padding: 5px;
+    }
+    .upload-btn-custom .preview-image {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 5px;
+        display: none;
+    }
+    .upload-btn-custom.has-file .preview-image {
+        display: block;
+    }
+    .upload-btn-custom.has-file .upload-icon {
+        display: none;
+    }
+    .upload-btn-custom .upload-icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 8px;
+    }
+    .upload-btn-custom .file-name {
+        font-size: 0.75rem;
+        word-break: break-word;
+        max-width: 100%;
+    }
+    .image-preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 15px;
+    }
+    .image-preview-item {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--bg-color);
+    }
+    .image-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .image-preview-item .remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .add-image-btn {
+        width: 120px;
+        height: 120px;
+        border: 2px dashed var(--primary-color);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background: rgba(96, 29, 87, 0.05);
+        transition: all 0.3s;
+        color: var(--primary-color);
+        font-size: 2rem;
+    }
+    .add-image-btn:hover {
+        background: rgba(96, 29, 87, 0.1);
+        transform: scale(1.05);
+    }
+    .form-control.is-invalid, .form-control.is-invalid:focus {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+    .error-message, .invalid-feedback, .error {
+        color: #dc3545 !important;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    .upload-btn-custom.is-invalid {
+        border-color: #dc3545 !important;
+        background: rgba(220, 53, 69, 0.1) !important;
+    }
+    .form-section {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        margin: 30px auto;
+        max-width: 900px;
+    }
+    .form-label {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 8px;
+    }
+    .form-control {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s;
+    }
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(96, 29, 87, 0.15);
+    }
+    .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        backdrop-filter: blur(2px);
+    }
+    .loader-spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 </style>
 @endpush
 
@@ -70,7 +247,7 @@
 
 <div class="container">
     <div class="form-section">
-        <form action="{{ route('service.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="serviceForm" action="{{ route('service.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="service_type" value="{{ $type }}">
 
@@ -150,8 +327,38 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Pallet Box 4 sides images</label>
-                    <input type="file" class="form-control @error('pallet_images') is-invalid @enderror" name="pallet_images[]" accept="image/*" multiple required>
-                    <small class="text-muted">Upload exactly 4 images (JPG, PNG, Max 5MB each)</small>
+                    <small class="text-muted d-block mb-2">Upload exactly 4 images (JPG, PNG, Max 5MB each)</small>
+                    <div class="upload-button-group">
+                        <div class="upload-btn-custom" data-side="side1">
+                            <input type="file" name="pallet_images[]" accept="image/*" data-side="side1" class="pallet-image-input">
+                            <img src="" alt="Preview" class="preview-image">
+                            <i class="bi bi-image upload-icon"></i>
+                            <div class="mt-2 small">Side 1</div>
+                            <div class="file-name mt-1 small text-muted"></div>
+                        </div>
+                        <div class="upload-btn-custom" data-side="side2">
+                            <input type="file" name="pallet_images[]" accept="image/*" data-side="side2" class="pallet-image-input">
+                            <img src="" alt="Preview" class="preview-image">
+                            <i class="bi bi-image upload-icon"></i>
+                            <div class="mt-2 small">Side 2</div>
+                            <div class="file-name mt-1 small text-muted"></div>
+                        </div>
+                        <div class="upload-btn-custom" data-side="side3">
+                            <input type="file" name="pallet_images[]" accept="image/*" data-side="side3" class="pallet-image-input">
+                            <img src="" alt="Preview" class="preview-image">
+                            <i class="bi bi-image upload-icon"></i>
+                            <div class="mt-2 small">Side 3</div>
+                            <div class="file-name mt-1 small text-muted"></div>
+                        </div>
+                        <div class="upload-btn-custom" data-side="side4">
+                            <input type="file" name="pallet_images[]" accept="image/*" data-side="side4" class="pallet-image-input">
+                            <img src="" alt="Preview" class="preview-image">
+                            <i class="bi bi-image upload-icon"></i>
+                            <div class="mt-2 small">Side 4</div>
+                            <div class="file-name mt-1 small text-muted"></div>
+                        </div>
+                    </div>
+                    <div class="error-message text-danger small mt-1" id="pallet_images_error"></div>
                     @error('pallet_images')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -159,8 +366,15 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Full photo of Damage panels from front side & back side</label>
-                    <input type="file" class="form-control @error('damage_photos') is-invalid @enderror" name="damage_photos[]" accept="image/*" multiple required>
-                    <small class="text-muted">Upload 2-10 images (JPG, PNG, Max 5MB each)</small>
+                    <small class="text-muted d-block mb-2">Upload at least 1 image, maximum 10 images (JPG, PNG, Max 5MB each)</small>
+                    <div class="image-preview-container" id="damagePhotosContainer">
+                        <!-- Images will be added here dynamically -->
+                    </div>
+                    <input type="file" id="damagePhotoInput" accept="image/*" style="display: none;" multiple>
+                    <div class="add-image-btn mt-2" id="addDamagePhotoBtn">
+                        <i class="bi bi-plus-lg"></i>
+                    </div>
+                    <div class="error-message text-danger small mt-2" id="damage_photos_error"></div>
                     @error('damage_photos')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -288,11 +502,623 @@
 
             <!-- Submit Button -->
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary btn-lg px-5">
+                <button type="submit" id="submitBtn" class="btn btn-primary btn-lg px-5">
                     <i class="bi bi-send me-2"></i>Submit Request
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Alert Container for Messages -->
+<div id="alertContainer" class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 9999; max-width: 500px; display: none;"></div>
 @endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    @if($type === 'panel_damage')
+    // Custom validation methods
+    $.validator.addMethod("phoneFormat", function(value, element) {
+        return this.optional(element) || /^[0-9]{10,15}$/.test(value.replace(/[\s\-\(\)]/g, ''));
+    }, "Please enter a valid phone number (10-15 digits)");
+
+    $.validator.addMethod("fileSize", function(value, element, param) {
+        if (this.optional(element)) {
+            return true;
+        }
+        var maxSize = param * 1024 * 1024; // Convert MB to bytes
+        if (element.files && element.files[0]) {
+            return element.files[0].size <= maxSize;
+        }
+        return true;
+    }, "File size must be less than {0}MB");
+
+    $.validator.addMethod("fileCount", function(value, element, param) {
+        if (this.optional(element)) {
+            return true;
+        }
+        if (element.files) {
+            var min = param.min || 0;
+            var max = param.max || 999;
+            var count = element.files.length;
+            return count >= min && count <= max;
+        }
+        return true;
+    }, function(param, element) {
+        var min = param.min || 0;
+        var max = param.max || 999;
+        if (min === max) {
+            return "Please select exactly " + min + " files";
+        }
+        return "Please select between " + min + " and " + max + " files";
+    });
+
+    $.validator.addMethod("videoFormat", function(value, element) {
+        if (this.optional(element)) {
+            return true;
+        }
+        if (element.files && element.files[0]) {
+            var ext = element.files[0].name.split('.').pop().toLowerCase();
+            return ['mp4', 'avi', 'mov', 'wmv'].includes(ext);
+        }
+        return true;
+    }, "Please select a valid video file (MP4, AVI, MOV, WMV)");
+
+    $.validator.addMethod("imageFormat", function(value, element) {
+        if (this.optional(element)) {
+            return true;
+        }
+        if (element.files && element.files[0]) {
+            var ext = element.files[0].name.split('.').pop().toLowerCase();
+            return ['jpg', 'jpeg', 'png'].includes(ext);
+        }
+        return true;
+    }, "Please select a valid image file (JPG, PNG)");
+
+    // Validation rules for Panel Damage
+    var validationRules = {
+        name: {
+            required: true,
+            minlength: 2,
+            maxlength: 255
+        },
+        phone: {
+            required: true,
+            phoneFormat: true
+        },
+        email: {
+            required: true,
+            email: true
+        },
+        city: {
+            required: true,
+            minlength: 2
+        },
+        delivery_date: {
+            required: true,
+            date: true
+        },
+        invoice_no: {
+            required: true,
+            minlength: 3
+        },
+        serial_number: {
+            required: true,
+            minlength: 3
+        },
+        loading_video: {
+            required: true,
+            videoFormat: true,
+            fileSize: 10
+        },
+        'pallet_images[]': {
+            required: function() {
+                return palletImageCount < 4;
+            },
+            imageFormat: true,
+            fileSize: 5
+        },
+        pallet_id_slip: {
+            required: true,
+            imageFormat: true,
+            fileSize: 5
+        },
+        lr_copy: {
+            required: true,
+            imageFormat: true,
+            fileSize: 5
+        },
+        pallet_position: {
+            imageFormat: true,
+            fileSize: 5
+        }
+    };
+
+    // Initialize validation
+    var validator = $('#serviceForm').validate({
+        rules: validationRules,
+        messages: {
+            name: {
+                required: "Please enter your name or company name",
+                minlength: "Name must be at least 2 characters"
+            },
+            phone: {
+                required: "Please enter your phone number",
+                phoneFormat: "Please enter a valid phone number"
+            },
+            email: {
+                required: "Please enter your email address",
+                email: "Please enter a valid email address"
+            },
+            city: {
+                required: "Please enter your city",
+                minlength: "City name must be at least 2 characters"
+            },
+            delivery_date: {
+                required: "Please select delivery date",
+                date: "Please enter a valid date"
+            },
+            invoice_no: {
+                required: "Please enter invoice number",
+                minlength: "Invoice number must be at least 3 characters"
+            },
+            serial_number: {
+                required: "Please enter serial number",
+                minlength: "Serial number must be at least 3 characters"
+            },
+            loading_video: {
+                required: "Please upload loading video",
+                fileSize: "Video size must be less than 10MB"
+            },
+            'pallet_images[]': {
+                required: "Please upload exactly 4 pallet images"
+            },
+            pallet_id_slip: {
+                required: "Please upload pallet ID slip",
+                fileSize: "Image size must be less than 5MB"
+            },
+            lr_copy: {
+                required: "Please upload LR copy",
+                fileSize: "Image size must be less than 5MB"
+            }
+        },
+        errorClass: 'is-invalid',
+        validClass: 'is-valid',
+        errorElement: 'div',
+        errorPlacement: function(error, element) {
+            error.addClass('text-danger').css('color', '#dc3545');
+            if (element.attr('type') === 'file') {
+                var errorContainer = element.closest('.mb-4').find('.error-message');
+                if (errorContainer.length) {
+                    errorContainer.html(error.text()).css('color', '#dc3545');
+                } else {
+                    error.insertAfter(element.next('small'));
+                }
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+            $(element).css('border-color', '#dc3545');
+            if ($(element).closest('.upload-btn-custom').length) {
+                $(element).closest('.upload-btn-custom').addClass('is-invalid');
+            }
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+            $(element).css('border-color', '');
+            if ($(element).closest('.upload-btn-custom').length) {
+                $(element).closest('.upload-btn-custom').removeClass('is-invalid');
+            }
+        },
+        submitHandler: function(form) {
+            // Validate pallet images count
+            if (palletImageCount !== 4) {
+                $('#pallet_images_error').text('Please upload exactly 4 images (' + palletImageCount + '/4 uploaded)').css('color', '#dc3545');
+                $('.pallet-image-input').addClass('is-invalid').css('border-color', '#dc3545');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please upload exactly 4 pallet images',
+                    confirmButtonColor: '#601d57'
+                });
+                return false;
+            }
+            
+            // Validate damage photos count
+            if (damagePhotos.length < minDamagePhotos || damagePhotos.length > maxDamagePhotos) {
+                $('#damage_photos_error').text('Please upload between ' + minDamagePhotos + ' and ' + maxDamagePhotos + ' images (' + damagePhotos.length + ' uploaded)').css('color', '#dc3545');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please upload between ' + minDamagePhotos + ' and ' + maxDamagePhotos + ' damage photos',
+                    confirmButtonColor: '#601d57'
+                });
+                return false;
+            }
+            
+            submitFormAjax(form);
+            return false;
+        }
+    });
+
+    // AJAX Form Submission
+    function submitFormAjax(form) {
+        var formData = new FormData(form);
+        var submitBtn = $('#submitBtn');
+        var originalHtml = submitBtn.html();
+        
+        // Disable submit button
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
+
+        $.ajax({
+            url: $(form).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        confirmButtonColor: '#601d57',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = response.redirect;
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                submitBtn.prop('disabled', false).html(originalHtml);
+                
+                if (xhr.status === 422) {
+                    // Validation errors
+                    var errors = xhr.responseJSON.errors;
+                    
+                    // Clear previous errors
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.error-message').remove();
+                    
+                    // Display new errors
+                    $.each(errors, function(field, messages) {
+                        var fieldName = field.replace(/\./g, '_');
+                        var $field = $('[name="' + field + '"], [name="' + fieldName + '"]');
+                        
+                        if ($field.length) {
+                            $field.addClass('is-invalid');
+                            var errorMsg = Array.isArray(messages) ? messages[0] : messages;
+                            
+                            // Add error message
+                            if ($field.attr('type') === 'file') {
+                                $field.after('<div class="error-message text-danger small mt-1">' + errorMsg + '</div>');
+                            } else {
+                                $field.after('<div class="error-message invalid-feedback d-block">' + errorMsg + '</div>');
+                            }
+                        }
+                    });
+                    
+                    // Show error alert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        html: 'Please correct the errors in the form',
+                        confirmButtonColor: '#601d57'
+                    });
+                    
+                    // Scroll to first error
+                    setTimeout(function() {
+                        $('html, body').animate({
+                            scrollTop: $('.is-invalid').first().offset().top - 100
+        }, 500);
+    }, 300);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
+                        confirmButtonColor: '#601d57'
+                    });
+                }
+            }
+        });
+    }
+
+    // Loader Functions (from Warehouse Management System)
+    function showLoader() {
+        if ($('.loader-overlay').length === 0) {
+            $('body').append(`
+                <div class="loader-overlay">
+                    <div class="loader-spinner"></div>
+                </div>
+            `);
+        }
+    }
+
+    function hideLoader() {
+        $('.loader-overlay').remove();
+    }
+
+    // Pallet Images - 4 separate uploads
+    var palletImageCount = 0;
+    $('.pallet-image-input').on('change', function() {
+        var $input = $(this);
+        var $btn = $input.closest('.upload-btn-custom');
+        var $preview = $btn.find('.preview-image');
+        var file = this.files[0];
+        
+        if (file) {
+            // Validate file
+            var maxSize = 5 * 1024 * 1024; // 5MB
+            var ext = file.name.split('.').pop().toLowerCase();
+            
+            if (!['jpg', 'jpeg', 'png'].includes(ext)) {
+                $btn.removeClass('has-file');
+                $preview.attr('src', '').hide();
+                $btn.find('.file-name').text('Invalid format').addClass('text-danger');
+                $input.val('');
+                return;
+            }
+            
+            if (file.size > maxSize) {
+                $btn.removeClass('has-file');
+                $preview.attr('src', '').hide();
+                $btn.find('.file-name').text('File too large').addClass('text-danger');
+                $input.val('');
+                return;
+            }
+            
+            // Show image preview
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $preview.attr('src', e.target.result).show();
+                $btn.addClass('has-file');
+                $btn.find('.file-name').text(file.name).removeClass('text-danger');
+                palletImageCount++;
+                validatePalletImages();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $btn.removeClass('has-file');
+            $preview.attr('src', '').hide();
+            $btn.find('.file-name').text('');
+            if (palletImageCount > 0) {
+                palletImageCount--;
+            }
+            validatePalletImages();
+        }
+    });
+
+    function validatePalletImages() {
+        var $error = $('#pallet_images_error');
+        if (palletImageCount < 4) {
+            $error.text('Please upload exactly 4 images (' + palletImageCount + '/4 uploaded)');
+            $('.pallet-image-input').addClass('is-invalid');
+        } else {
+            $error.text('');
+            $('.pallet-image-input').removeClass('is-invalid').addClass('is-valid');
+        }
+    }
+
+    // Damage Photos - Dynamic add/remove
+    var damagePhotos = [];
+    var maxDamagePhotos = 10;
+    var minDamagePhotos = 1;
+
+    $('#addDamagePhotoBtn').on('click', function() {
+        if (damagePhotos.length >= maxDamagePhotos) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Limit Reached',
+                text: 'Maximum ' + maxDamagePhotos + ' images allowed',
+                confirmButtonColor: '#601d57'
+            });
+            return;
+        }
+        $('#damagePhotoInput').click();
+    });
+
+    $('#damagePhotoInput').on('change', function() {
+        var files = Array.from(this.files);
+        files.forEach(function(file) {
+            if (damagePhotos.length >= maxDamagePhotos) return;
+            
+            var maxSize = 5 * 1024 * 1024; // 5MB
+            var ext = file.name.split('.').pop().toLowerCase();
+            
+            if (!['jpg', 'jpeg', 'png'].includes(ext)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Format',
+                    text: file.name + ' is not a valid image file',
+                    confirmButtonColor: '#601d57'
+                });
+                return;
+            }
+            
+            if (file.size > maxSize) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Too Large',
+                    text: file.name + ' exceeds 5MB limit',
+                    confirmButtonColor: '#601d57'
+                });
+                return;
+            }
+            
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var photoId = 'damage_photo_' + Date.now() + '_' + Math.random();
+                damagePhotos.push({
+                    id: photoId,
+                    file: file,
+                    dataUrl: e.target.result
+                });
+                
+                var $preview = $('<div class="image-preview-item">' +
+                    '<img src="' + e.target.result + '" alt="Damage Photo">' +
+                    '<button type="button" class="remove-btn" data-id="' + photoId + '">' +
+                    '<i class="bi bi-x"></i>' +
+                    '</button>' +
+                    '</div>');
+                
+                $('#damagePhotosContainer').append($preview);
+                updateDamagePhotosInput();
+                validateDamagePhotos();
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        $(this).val('');
+    });
+
+    $(document).on('click', '.remove-btn', function() {
+        var photoId = $(this).data('id');
+        damagePhotos = damagePhotos.filter(function(photo) {
+            return photo.id !== photoId;
+        });
+        $(this).closest('.image-preview-item').remove();
+        updateDamagePhotosInput();
+        validateDamagePhotos();
+    });
+
+    function updateDamagePhotosInput() {
+        // Create a data transfer object to hold files
+        var dt = new DataTransfer();
+        damagePhotos.forEach(function(photo) {
+            dt.items.add(photo.file);
+        });
+        
+        // We'll handle this in form submission
+    }
+
+    function validateDamagePhotos() {
+        var $error = $('#damage_photos_error');
+        if (damagePhotos.length < minDamagePhotos) {
+            $error.text('Please upload at least ' + minDamagePhotos + ' image(s) (' + damagePhotos.length + ' uploaded)');
+            $('#damagePhotosContainer').addClass('border-danger');
+        } else {
+            $error.text('');
+            $('#damagePhotosContainer').removeClass('border-danger');
+        }
+    }
+
+    // Update AJAX submission to include damage photos
+    function submitFormAjax(form) {
+        var formData = new FormData(form);
+        var submitBtn = $('#submitBtn');
+        var originalHtml = submitBtn.html();
+        
+        // Add damage photos to form data
+        damagePhotos.forEach(function(photo, index) {
+            formData.append('damage_photos[]', photo.file);
+        });
+        
+        // Disable submit button
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
+        showLoader();
+
+        $.ajax({
+            url: $(form).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                hideLoader();
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        confirmButtonColor: '#601d57',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = response.redirect;
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                hideLoader();
+                submitBtn.prop('disabled', false).html(originalHtml);
+                
+                if (xhr.status === 422) {
+                    // Validation errors
+                    var errors = xhr.responseJSON.errors;
+                    
+                    // Clear previous errors
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.error-message').text('');
+                    $('.invalid-feedback').remove();
+                    
+                    // Display new errors with red color
+                    $.each(errors, function(field, messages) {
+                        var fieldName = field.replace(/\./g, '_');
+                        var $field = $('[name="' + field + '"], [name="' + fieldName + '"]');
+                        
+                        if ($field.length) {
+                            $field.addClass('is-invalid');
+                            $field.css('border-color', '#dc3545');
+                            var errorMsg = Array.isArray(messages) ? messages[0] : messages;
+                            
+                            // Add error message with red color
+                            if ($field.attr('type') === 'file') {
+                                var $errorContainer = $field.closest('.mb-4').find('.error-message');
+                                if ($errorContainer.length) {
+                                    $errorContainer.text(errorMsg).css('color', '#dc3545');
+                                } else {
+                                    $field.after('<div class="error-message text-danger small mt-1">' + errorMsg + '</div>');
+                                }
+                            } else {
+                                $field.after('<div class="invalid-feedback d-block" style="color: #dc3545 !important;">' + errorMsg + '</div>');
+                            }
+                        }
+                    });
+                    
+                    // Show error alert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        html: 'Please correct the errors in the form',
+                        confirmButtonColor: '#601d57'
+                    });
+                    
+                    // Scroll to first error
+                    setTimeout(function() {
+                        $('html, body').animate({
+                            scrollTop: $('.is-invalid').first().offset().top - 100
+                        }, 500);
+                    }, 300);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
+                        confirmButtonColor: '#601d57'
+                    });
+                }
+            }
+        });
+    }
+    @else
+    // For other service types, use regular form submission (will be updated later)
+    @endif
+});
+</script>
+@endpush

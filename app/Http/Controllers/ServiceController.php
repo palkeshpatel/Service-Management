@@ -35,7 +35,19 @@ class ServiceController extends Controller
         }
 
         $rules = $this->getValidationRules($type);
-        $validated = $request->validate($rules);
+        
+        try {
+            $validated = $request->validate($rules);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            throw $e;
+        }
 
         // Handle file uploads
         $attachments = [];
@@ -81,6 +93,15 @@ class ServiceController extends Controller
             'attachments' => $attachments,
             'status' => 'pending',
         ]);
+
+        // Return JSON response for AJAX requests
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Service request submitted successfully! We will contact you soon.',
+                'redirect' => route('service.index')
+            ]);
+        }
 
         return redirect()->route('service.index')->with('success', 'Service request submitted successfully! We will contact you soon.');
     }

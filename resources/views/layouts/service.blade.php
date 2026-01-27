@@ -58,15 +58,7 @@
             </a>
             @auth
                 <div class="ms-auto">
-                    <a href="{{ route('admin.requests.index') }}" class="btn btn-outline-primary me-2">
-                        <i class="bi bi-inbox me-1"></i>Admin Panel
-                    </a>
-                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-outline-secondary">
-                            <i class="bi bi-box-arrow-right me-1"></i>Logout
-                        </button>
-                    </form>
+
                 </div>
             @endauth
         </div>
