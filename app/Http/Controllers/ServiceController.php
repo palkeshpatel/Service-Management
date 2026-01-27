@@ -25,6 +25,11 @@ class ServiceController extends Controller
         return view('service.form', compact('type'));
     }
 
+    public function thankYou()
+    {
+        return view('service.thankyou');
+    }
+
     public function store(Request $request)
     {
         $type = $request->input('service_type');
@@ -99,11 +104,11 @@ class ServiceController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Service request submitted successfully! We will contact you soon.',
-                'redirect' => route('service.index')
+                'redirect' => route('service.thankyou')
             ]);
         }
 
-        return redirect()->route('service.index')->with('success', 'Service request submitted successfully! We will contact you soon.');
+        return redirect()->route('service.thankyou')->with('success', 'Service request submitted successfully! We will contact you soon.');
     }
 
     public function adminIndex(Request $request)

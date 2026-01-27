@@ -12,6 +12,19 @@
         padding: 40px 20px;
         text-align: center;
     }
+    .form-header h2 {
+        color: white;
+        font-weight: 600;
+    }
+    .form-header a {
+        color: white !important;
+        text-decoration: none;
+        transition: opacity 0.3s;
+    }
+    .form-header a:hover {
+        opacity: 0.9;
+        text-decoration: underline;
+    }
     .form-section {
         background: white;
         padding: 40px;
@@ -513,13 +526,6 @@
                     @enderror
                 </div>
             @endif
-
-            <!-- Contact Information -->
-            <div class="alert alert-info mt-4">
-                <h6><i class="bi bi-info-circle me-2"></i>Contact Information</h6>
-                <p class="mb-1"><strong>Email:</strong> <a href="mailto:service@yuvaanenergy.com">service@yuvaanenergy.com</a></p>
-                <p class="mb-0"><strong>Phone:</strong> <a href="tel:9274100819">9274100819</a></p>
-            </div>
 
             <!-- Submit Button -->
             <div class="text-center mt-4">
