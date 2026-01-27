@@ -212,6 +212,12 @@
         border-color: var(--primary-color);
         box-shadow: 0 0 0 0.2rem rgba(96, 29, 87, 0.15);
     }
+    .text-primary {
+        color: var(--primary-color) !important;
+    }
+    h4.text-primary {
+        color: var(--primary-color) !important;
+    }
     .loader-overlay {
         position: fixed;
         top: 0;
