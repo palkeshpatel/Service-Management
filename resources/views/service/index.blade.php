@@ -9,7 +9,7 @@
         .service-header {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 80px 20px;
+            padding: 30px 20px;
             text-align: center;
         }
 

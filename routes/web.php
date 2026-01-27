@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 // Public Service Routes
 Route::get('/', [ServiceController::class, 'index'])->name('service.index');
+Route::get('/service/thank-you', [ServiceController::class, 'thankYou'])->name('service.thankyou');
 Route::get('/service/{type}', [ServiceController::class, 'showForm'])->name('service.form');
 Route::post('/service', [ServiceController::class, 'store'])->name('service.store');
-Route::get('/service/thank-you', [ServiceController::class, 'thankYou'])->name('service.thankyou');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
