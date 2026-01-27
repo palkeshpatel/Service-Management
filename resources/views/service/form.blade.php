@@ -411,8 +411,9 @@
                 <!-- Junction Box Attachments -->
                 <div class="mb-4">
                     <label class="form-label required-field">Voltage with Multimeter (Video)</label>
-                    <input type="file" class="form-control @error('voltage_video') is-invalid @enderror" name="voltage_video" accept="video/*" required>
+                    <input type="file" class="form-control @error('voltage_video') is-invalid @enderror" name="voltage_video" accept="video/*" id="voltage_video" required>
                     <small class="text-muted">Max 10MB, Video format (MP4, AVI, MOV, WMV)</small>
+                    <div class="error-message text-danger small mt-1" id="voltage_video_error"></div>
                     @error('voltage_video')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -420,8 +421,9 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Panel Junction box burnt</label>
-                    <input type="file" class="form-control @error('junction_box_photo') is-invalid @enderror" name="junction_box_photo" accept="image/*" required>
+                    <input type="file" class="form-control @error('junction_box_photo') is-invalid @enderror" name="junction_box_photo" accept="image/*" id="junction_box_photo" required>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
+                    <div class="error-message text-danger small mt-1" id="junction_box_photo_error"></div>
                     @error('junction_box_photo')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -429,8 +431,9 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Voltage power</label>
-                    <input type="file" class="form-control @error('voltage_power') is-invalid @enderror" name="voltage_power" accept="image/*" required>
+                    <input type="file" class="form-control @error('voltage_power') is-invalid @enderror" name="voltage_power" accept="image/*" id="voltage_power" required>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
+                    <div class="error-message text-danger small mt-1" id="voltage_power_error"></div>
                     @error('voltage_power')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -438,8 +441,9 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Site Photograph</label>
-                    <input type="file" class="form-control @error('site_photograph') is-invalid @enderror" name="site_photograph" accept="image/*" required>
+                    <input type="file" class="form-control @error('site_photograph') is-invalid @enderror" name="site_photograph" accept="image/*" id="site_photograph" required>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
+                    <div class="error-message text-danger small mt-1" id="site_photograph_error"></div>
                     @error('site_photograph')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -449,8 +453,9 @@
                 <!-- Hotspot Attachments -->
                 <div class="mb-4">
                     <label class="form-label required-field">Method of Loading & Unloading from vehicle (Video)</label>
-                    <input type="file" class="form-control @error('loading_video') is-invalid @enderror" name="loading_video" accept="video/*" required>
+                    <input type="file" class="form-control @error('loading_video') is-invalid @enderror" name="loading_video" accept="video/*" id="loading_video_hotspot" required>
                     <small class="text-muted">Max 10MB, Video format (MP4, AVI, MOV, WMV)</small>
+                    <div class="error-message text-danger small mt-1" id="loading_video_hotspot_error"></div>
                     @error('loading_video')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -458,8 +463,15 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Full photo of Damage panels from front side & back side</label>
-                    <input type="file" class="form-control @error('damage_photos') is-invalid @enderror" name="damage_photos[]" accept="image/*" multiple required>
-                    <small class="text-muted">Upload 2-10 images (JPG, PNG, Max 5MB each)</small>
+                    <small class="text-muted d-block mb-2">Upload at least 2 images, maximum 10 images (JPG, PNG, Max 5MB each)</small>
+                    <div class="image-preview-container" id="damagePhotosHotspotContainer">
+                        <!-- Images will be added here dynamically -->
+                    </div>
+                    <input type="file" id="damagePhotoHotspotInput" accept="image/*" style="display: none;" multiple>
+                    <div class="add-image-btn mt-2" id="addDamagePhotoHotspotBtn">
+                        <i class="bi bi-plus-lg"></i>
+                    </div>
+                    <div class="error-message text-danger small mt-2" id="damage_photos_hotspot_error"></div>
                     @error('damage_photos')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -467,8 +479,9 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Pallet ID slip</label>
-                    <input type="file" class="form-control @error('pallet_id_slip') is-invalid @enderror" name="pallet_id_slip" accept="image/*" required>
+                    <input type="file" class="form-control @error('pallet_id_slip') is-invalid @enderror" name="pallet_id_slip" accept="image/*" id="pallet_id_slip_hotspot" required>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
+                    <div class="error-message text-danger small mt-1" id="pallet_id_slip_hotspot_error"></div>
                     @error('pallet_id_slip')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -476,8 +489,9 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Installation Site Photograph</label>
-                    <input type="file" class="form-control @error('installation_site') is-invalid @enderror" name="installation_site" accept="image/*" required>
+                    <input type="file" class="form-control @error('installation_site') is-invalid @enderror" name="installation_site" accept="image/*" id="installation_site" required>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
+                    <div class="error-message text-danger small mt-1" id="installation_site_error"></div>
                     @error('installation_site')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -485,8 +499,15 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Photos of issue</label>
-                    <input type="file" class="form-control @error('issue_photos') is-invalid @enderror" name="issue_photos[]" accept="image/*" multiple required>
-                    <small class="text-muted">Upload 1-10 images (JPG, PNG, Max 5MB each)</small>
+                    <small class="text-muted d-block mb-2">Upload at least 1 image, maximum 10 images (JPG, PNG, Max 5MB each)</small>
+                    <div class="image-preview-container" id="issuePhotosContainer">
+                        <!-- Images will be added here dynamically -->
+                    </div>
+                    <input type="file" id="issuePhotoInput" accept="image/*" style="display: none;" multiple>
+                    <div class="add-image-btn mt-2" id="addIssuePhotoBtn">
+                        <i class="bi bi-plus-lg"></i>
+                    </div>
+                    <div class="error-message text-danger small mt-2" id="issue_photos_error"></div>
                     @error('issue_photos')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -763,7 +784,8 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-Requested-With': 'XMLHttpRequest'
             },
             success: function(response) {
                 if (response.success) {
@@ -1036,7 +1058,8 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-Requested-With': 'XMLHttpRequest'
             },
             success: function(response) {
                 hideLoader();
@@ -1116,8 +1139,765 @@ $(document).ready(function() {
             }
         });
     }
-    @else
-    // For other service types, use regular form submission (will be updated later)
+    @elseif($type === 'junction_box')
+    // Custom validation methods
+    $.validator.addMethod("phoneFormat", function(value, element) {
+        return this.optional(element) || /^[0-9]{10,15}$/.test(value.replace(/[\s\-\(\)]/g, ''));
+    }, "Please enter a valid phone number (10-15 digits)");
+
+    $.validator.addMethod("fileSize", function(value, element, param) {
+        if (this.optional(element)) {
+            return true;
+        }
+        var maxSize = param * 1024 * 1024;
+        if (element.files && element.files[0]) {
+            return element.files[0].size <= maxSize;
+        }
+        return true;
+    }, "File size must be less than {0}MB");
+
+    $.validator.addMethod("videoFormat", function(value, element) {
+        if (this.optional(element)) {
+            return true;
+        }
+        if (element.files && element.files[0]) {
+            var ext = element.files[0].name.split('.').pop().toLowerCase();
+            return ['mp4', 'avi', 'mov', 'wmv'].includes(ext);
+        }
+        return true;
+    }, "Please select a valid video file (MP4, AVI, MOV, WMV)");
+
+    $.validator.addMethod("imageFormat", function(value, element) {
+        if (this.optional(element)) {
+            return true;
+        }
+        if (element.files && element.files[0]) {
+            var ext = element.files[0].name.split('.').pop().toLowerCase();
+            return ['jpg', 'jpeg', 'png'].includes(ext);
+        }
+        return true;
+    }, "Please select a valid image file (JPG, PNG)");
+
+    // Validation rules for Junction Box
+    var validationRules = {
+        name: {
+            required: true,
+            minlength: 2,
+            maxlength: 255
+        },
+        phone: {
+            required: true,
+            phoneFormat: true
+        },
+        email: {
+            required: true,
+            email: true
+        },
+        city: {
+            required: true,
+            minlength: 2
+        },
+        delivery_date: {
+            required: true,
+            date: true
+        },
+        invoice_no: {
+            required: true,
+            minlength: 3
+        },
+        serial_number: {
+            required: true,
+            minlength: 3
+        },
+        voltage_video: {
+            required: true,
+            videoFormat: true,
+            fileSize: 10
+        },
+        junction_box_photo: {
+            required: true,
+            imageFormat: true,
+            fileSize: 5
+        },
+        voltage_power: {
+            required: true,
+            imageFormat: true,
+            fileSize: 5
+        },
+        site_photograph: {
+            required: true,
+            imageFormat: true,
+            fileSize: 5
+        }
+    };
+
+    // Initialize validation
+    var validator = $('#serviceForm').validate({
+        rules: validationRules,
+        messages: {
+            name: {
+                required: "Please enter your name or company name",
+                minlength: "Name must be at least 2 characters"
+            },
+            phone: {
+                required: "Please enter your phone number",
+                phoneFormat: "Please enter a valid phone number"
+            },
+            email: {
+                required: "Please enter your email address",
+                email: "Please enter a valid email address"
+            },
+            city: {
+                required: "Please enter your city",
+                minlength: "City name must be at least 2 characters"
+            },
+            delivery_date: {
+                required: "Please select delivery date",
+                date: "Please enter a valid date"
+            },
+            invoice_no: {
+                required: "Please enter invoice number",
+                minlength: "Invoice number must be at least 3 characters"
+            },
+            serial_number: {
+                required: "Please enter serial number",
+                minlength: "Serial number must be at least 3 characters"
+            },
+            voltage_video: {
+                required: "Please upload voltage video",
+                fileSize: "Video size must be less than 10MB"
+            },
+            junction_box_photo: {
+                required: "Please upload junction box photo",
+                fileSize: "Image size must be less than 5MB"
+            },
+            voltage_power: {
+                required: "Please upload voltage power image",
+                fileSize: "Image size must be less than 5MB"
+            },
+            site_photograph: {
+                required: "Please upload site photograph",
+                fileSize: "Image size must be less than 5MB"
+            }
+        },
+        errorClass: 'is-invalid',
+        validClass: 'is-valid',
+        errorElement: 'div',
+        errorPlacement: function(error, element) {
+            error.addClass('text-danger').css('color', '#dc3545');
+            if (element.attr('type') === 'file') {
+                var errorContainer = element.closest('.mb-4').find('.error-message');
+                if (errorContainer.length) {
+                    errorContainer.html(error.text()).css('color', '#dc3545');
+                } else {
+                    error.insertAfter(element.next('small'));
+                }
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+            $(element).css('border-color', '#dc3545');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+            $(element).css('border-color', '');
+        },
+        submitHandler: function(form) {
+            submitFormAjax(form);
+            return false;
+        }
+    });
+
+    // AJAX Form Submission
+    function submitFormAjax(form) {
+        var formData = new FormData(form);
+        var submitBtn = $('#submitBtn');
+        var originalHtml = submitBtn.html();
+        
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
+        showLoader();
+
+        $.ajax({
+            url: $(form).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                hideLoader();
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        confirmButtonColor: '#601d57',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = response.redirect;
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                hideLoader();
+                submitBtn.prop('disabled', false).html(originalHtml);
+                
+                if (xhr.status === 422) {
+                    var errors = xhr.responseJSON.errors;
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.error-message').text('');
+                    $('.invalid-feedback').remove();
+                    
+                    $.each(errors, function(field, messages) {
+                        var fieldName = field.replace(/\./g, '_');
+                        var $field = $('[name="' + field + '"], [name="' + fieldName + '"], #' + field);
+                        
+                        if ($field.length) {
+                            $field.addClass('is-invalid');
+                            $field.css('border-color', '#dc3545');
+                            var errorMsg = Array.isArray(messages) ? messages[0] : messages;
+                            
+                            if ($field.attr('type') === 'file') {
+                                var $errorContainer = $field.closest('.mb-4').find('.error-message');
+                                if ($errorContainer.length) {
+                                    $errorContainer.text(errorMsg).css('color', '#dc3545');
+                                } else {
+                                    $field.after('<div class="error-message text-danger small mt-1">' + errorMsg + '</div>');
+                                }
+                            } else {
+                                $field.after('<div class="invalid-feedback d-block" style="color: #dc3545 !important;">' + errorMsg + '</div>');
+                            }
+                        }
+                    });
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        html: 'Please correct the errors in the form',
+                        confirmButtonColor: '#601d57'
+                    });
+                    
+                    setTimeout(function() {
+                        $('html, body').animate({
+                            scrollTop: $('.is-invalid').first().offset().top - 100
+                        }, 500);
+                    }, 300);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
+                        confirmButtonColor: '#601d57'
+                    });
+                }
+            }
+        });
+    }
+
+    // Loader Functions
+    function showLoader() {
+        if ($('.loader-overlay').length === 0) {
+            $('body').append(`
+                <div class="loader-overlay">
+                    <div class="loader-spinner"></div>
+                </div>
+            `);
+        }
+    }
+
+    function hideLoader() {
+        $('.loader-overlay').remove();
+    }
+
+    @elseif($type === 'hotspot')
+    // Custom validation methods
+    $.validator.addMethod("phoneFormat", function(value, element) {
+        return this.optional(element) || /^[0-9]{10,15}$/.test(value.replace(/[\s\-\(\)]/g, ''));
+    }, "Please enter a valid phone number (10-15 digits)");
+
+    $.validator.addMethod("fileSize", function(value, element, param) {
+        if (this.optional(element)) {
+            return true;
+        }
+        var maxSize = param * 1024 * 1024;
+        if (element.files && element.files[0]) {
+            return element.files[0].size <= maxSize;
+        }
+        return true;
+    }, "File size must be less than {0}MB");
+
+    $.validator.addMethod("videoFormat", function(value, element) {
+        if (this.optional(element)) {
+            return true;
+        }
+        if (element.files && element.files[0]) {
+            var ext = element.files[0].name.split('.').pop().toLowerCase();
+            return ['mp4', 'avi', 'mov', 'wmv'].includes(ext);
+        }
+        return true;
+    }, "Please select a valid video file (MP4, AVI, MOV, WMV)");
+
+    $.validator.addMethod("imageFormat", function(value, element) {
+        if (this.optional(element)) {
+            return true;
+        }
+        if (element.files && element.files[0]) {
+            var ext = element.files[0].name.split('.').pop().toLowerCase();
+            return ['jpg', 'jpeg', 'png'].includes(ext);
+        }
+        return true;
+    }, "Please select a valid image file (JPG, PNG)");
+
+    // Validation rules for Hotspot
+    var validationRules = {
+        name: {
+            required: true,
+            minlength: 2,
+            maxlength: 255
+        },
+        phone: {
+            required: true,
+            phoneFormat: true
+        },
+        email: {
+            required: true,
+            email: true
+        },
+        city: {
+            required: true,
+            minlength: 2
+        },
+        delivery_date: {
+            required: true,
+            date: true
+        },
+        invoice_no: {
+            required: true,
+            minlength: 3
+        },
+        serial_number: {
+            required: true,
+            minlength: 3
+        },
+        loading_video: {
+            required: true,
+            videoFormat: true,
+            fileSize: 10
+        },
+        pallet_id_slip: {
+            required: true,
+            imageFormat: true,
+            fileSize: 5
+        },
+        installation_site: {
+            required: true,
+            imageFormat: true,
+            fileSize: 5
+        }
+    };
+
+    // Initialize validation
+    var validator = $('#serviceForm').validate({
+        rules: validationRules,
+        messages: {
+            name: {
+                required: "Please enter your name or company name",
+                minlength: "Name must be at least 2 characters"
+            },
+            phone: {
+                required: "Please enter your phone number",
+                phoneFormat: "Please enter a valid phone number"
+            },
+            email: {
+                required: "Please enter your email address",
+                email: "Please enter a valid email address"
+            },
+            city: {
+                required: "Please enter your city",
+                minlength: "City name must be at least 2 characters"
+            },
+            delivery_date: {
+                required: "Please select delivery date",
+                date: "Please enter a valid date"
+            },
+            invoice_no: {
+                required: "Please enter invoice number",
+                minlength: "Invoice number must be at least 3 characters"
+            },
+            serial_number: {
+                required: "Please enter serial number",
+                minlength: "Serial number must be at least 3 characters"
+            },
+            loading_video: {
+                required: "Please upload loading video",
+                fileSize: "Video size must be less than 10MB"
+            },
+            pallet_id_slip: {
+                required: "Please upload pallet ID slip",
+                fileSize: "Image size must be less than 5MB"
+            },
+            installation_site: {
+                required: "Please upload installation site photograph",
+                fileSize: "Image size must be less than 5MB"
+            }
+        },
+        errorClass: 'is-invalid',
+        validClass: 'is-valid',
+        errorElement: 'div',
+        errorPlacement: function(error, element) {
+            error.addClass('text-danger').css('color', '#dc3545');
+            if (element.attr('type') === 'file') {
+                var errorContainer = element.closest('.mb-4').find('.error-message');
+                if (errorContainer.length) {
+                    errorContainer.html(error.text()).css('color', '#dc3545');
+                } else {
+                    error.insertAfter(element.next('small'));
+                }
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+            $(element).css('border-color', '#dc3545');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+            $(element).css('border-color', '');
+        },
+        submitHandler: function(form) {
+            // Validate damage photos count
+            if (damagePhotosHotspot.length < minDamagePhotosHotspot || damagePhotosHotspot.length > maxDamagePhotosHotspot) {
+                $('#damage_photos_hotspot_error').text('Please upload between ' + minDamagePhotosHotspot + ' and ' + maxDamagePhotosHotspot + ' images (' + damagePhotosHotspot.length + ' uploaded)').css('color', '#dc3545');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please upload between ' + minDamagePhotosHotspot + ' and ' + maxDamagePhotosHotspot + ' damage photos',
+                    confirmButtonColor: '#601d57'
+                });
+                return false;
+            }
+            
+            // Validate issue photos count
+            if (issuePhotos.length < minIssuePhotos || issuePhotos.length > maxIssuePhotos) {
+                $('#issue_photos_error').text('Please upload between ' + minIssuePhotos + ' and ' + maxIssuePhotos + ' images (' + issuePhotos.length + ' uploaded)').css('color', '#dc3545');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please upload between ' + minIssuePhotos + ' and ' + maxIssuePhotos + ' issue photos',
+                    confirmButtonColor: '#601d57'
+                });
+                return false;
+            }
+            
+            submitFormAjax(form);
+            return false;
+        }
+    });
+
+    // AJAX Form Submission
+    function submitFormAjax(form) {
+        var formData = new FormData(form);
+        var submitBtn = $('#submitBtn');
+        var originalHtml = submitBtn.html();
+        
+        // Add damage photos to form data
+        damagePhotosHotspot.forEach(function(photo, index) {
+            formData.append('damage_photos[]', photo.file);
+        });
+        
+        // Add issue photos to form data
+        issuePhotos.forEach(function(photo, index) {
+            formData.append('issue_photos[]', photo.file);
+        });
+        
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
+        showLoader();
+
+        $.ajax({
+            url: $(form).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                hideLoader();
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        confirmButtonColor: '#601d57',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = response.redirect;
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                hideLoader();
+                submitBtn.prop('disabled', false).html(originalHtml);
+                
+                if (xhr.status === 422) {
+                    var errors = xhr.responseJSON.errors;
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.error-message').text('');
+                    $('.invalid-feedback').remove();
+                    
+                    $.each(errors, function(field, messages) {
+                        var fieldName = field.replace(/\./g, '_');
+                        var $field = $('[name="' + field + '"], [name="' + fieldName + '"], #' + field);
+                        
+                        if ($field.length) {
+                            $field.addClass('is-invalid');
+                            $field.css('border-color', '#dc3545');
+                            var errorMsg = Array.isArray(messages) ? messages[0] : messages;
+                            
+                            if ($field.attr('type') === 'file') {
+                                var $errorContainer = $field.closest('.mb-4').find('.error-message');
+                                if ($errorContainer.length) {
+                                    $errorContainer.text(errorMsg).css('color', '#dc3545');
+                                } else {
+                                    $field.after('<div class="error-message text-danger small mt-1">' + errorMsg + '</div>');
+                                }
+                            } else {
+                                $field.after('<div class="invalid-feedback d-block" style="color: #dc3545 !important;">' + errorMsg + '</div>');
+                            }
+                        }
+                    });
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        html: 'Please correct the errors in the form',
+                        confirmButtonColor: '#601d57'
+                    });
+                    
+                    setTimeout(function() {
+                        $('html, body').animate({
+                            scrollTop: $('.is-invalid').first().offset().top - 100
+                        }, 500);
+                    }, 300);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
+                        confirmButtonColor: '#601d57'
+                    });
+                }
+            }
+        });
+    }
+
+    // Loader Functions
+    function showLoader() {
+        if ($('.loader-overlay').length === 0) {
+            $('body').append(`
+                <div class="loader-overlay">
+                    <div class="loader-spinner"></div>
+                </div>
+            `);
+        }
+    }
+
+    function hideLoader() {
+        $('.loader-overlay').remove();
+    }
+
+    // Damage Photos Hotspot - Dynamic add/remove
+    var damagePhotosHotspot = [];
+    var maxDamagePhotosHotspot = 10;
+    var minDamagePhotosHotspot = 2;
+
+    $('#addDamagePhotoHotspotBtn').on('click', function() {
+        if (damagePhotosHotspot.length >= maxDamagePhotosHotspot) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Limit Reached',
+                text: 'Maximum ' + maxDamagePhotosHotspot + ' images allowed',
+                confirmButtonColor: '#601d57'
+            });
+            return;
+        }
+        $('#damagePhotoHotspotInput').click();
+    });
+
+    $('#damagePhotoHotspotInput').on('change', function() {
+        var files = Array.from(this.files);
+        files.forEach(function(file) {
+            if (damagePhotosHotspot.length >= maxDamagePhotosHotspot) return;
+            
+            var maxSize = 5 * 1024 * 1024;
+            var ext = file.name.split('.').pop().toLowerCase();
+            
+            if (!['jpg', 'jpeg', 'png'].includes(ext)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Format',
+                    text: file.name + ' is not a valid image file',
+                    confirmButtonColor: '#601d57'
+                });
+                return;
+            }
+            
+            if (file.size > maxSize) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Too Large',
+                    text: file.name + ' exceeds 5MB limit',
+                    confirmButtonColor: '#601d57'
+                });
+                return;
+            }
+            
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var photoId = 'damage_photo_hotspot_' + Date.now() + '_' + Math.random();
+                damagePhotosHotspot.push({
+                    id: photoId,
+                    file: file,
+                    dataUrl: e.target.result
+                });
+                
+                var $preview = $('<div class="image-preview-item">' +
+                    '<img src="' + e.target.result + '" alt="Damage Photo">' +
+                    '<button type="button" class="remove-btn" data-id="' + photoId + '">' +
+                    '<i class="bi bi-x"></i>' +
+                    '</button>' +
+                    '</div>');
+                
+                $('#damagePhotosHotspotContainer').append($preview);
+                validateDamagePhotosHotspot();
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        $(this).val('');
+    });
+
+    $(document).on('click', '.remove-btn', function() {
+        var photoId = $(this).data('id');
+        if (photoId && photoId.startsWith('damage_photo_hotspot_')) {
+            damagePhotosHotspot = damagePhotosHotspot.filter(function(photo) {
+                return photo.id !== photoId;
+            });
+            $(this).closest('.image-preview-item').remove();
+            validateDamagePhotosHotspot();
+        } else if (photoId && photoId.startsWith('issue_photo_')) {
+            issuePhotos = issuePhotos.filter(function(photo) {
+                return photo.id !== photoId;
+            });
+            $(this).closest('.image-preview-item').remove();
+            validateIssuePhotos();
+        }
+    });
+
+    function validateDamagePhotosHotspot() {
+        var $error = $('#damage_photos_hotspot_error');
+        if (damagePhotosHotspot.length < minDamagePhotosHotspot) {
+            $error.text('Please upload at least ' + minDamagePhotosHotspot + ' image(s) (' + damagePhotosHotspot.length + ' uploaded)').css('color', '#dc3545');
+            $('#damagePhotosHotspotContainer').addClass('border-danger');
+        } else {
+            $error.text('');
+            $('#damagePhotosHotspotContainer').removeClass('border-danger');
+        }
+    }
+
+    // Issue Photos - Dynamic add/remove
+    var issuePhotos = [];
+    var maxIssuePhotos = 10;
+    var minIssuePhotos = 1;
+
+    $('#addIssuePhotoBtn').on('click', function() {
+        if (issuePhotos.length >= maxIssuePhotos) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Limit Reached',
+                text: 'Maximum ' + maxIssuePhotos + ' images allowed',
+                confirmButtonColor: '#601d57'
+            });
+            return;
+        }
+        $('#issuePhotoInput').click();
+    });
+
+    $('#issuePhotoInput').on('change', function() {
+        var files = Array.from(this.files);
+        files.forEach(function(file) {
+            if (issuePhotos.length >= maxIssuePhotos) return;
+            
+            var maxSize = 5 * 1024 * 1024;
+            var ext = file.name.split('.').pop().toLowerCase();
+            
+            if (!['jpg', 'jpeg', 'png'].includes(ext)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Format',
+                    text: file.name + ' is not a valid image file',
+                    confirmButtonColor: '#601d57'
+                });
+                return;
+            }
+            
+            if (file.size > maxSize) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Too Large',
+                    text: file.name + ' exceeds 5MB limit',
+                    confirmButtonColor: '#601d57'
+                });
+                return;
+            }
+            
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var photoId = 'issue_photo_' + Date.now() + '_' + Math.random();
+                issuePhotos.push({
+                    id: photoId,
+                    file: file,
+                    dataUrl: e.target.result
+                });
+                
+                var $preview = $('<div class="image-preview-item">' +
+                    '<img src="' + e.target.result + '" alt="Issue Photo">' +
+                    '<button type="button" class="remove-btn" data-id="' + photoId + '">' +
+                    '<i class="bi bi-x"></i>' +
+                    '</button>' +
+                    '</div>');
+                
+                $('#issuePhotosContainer').append($preview);
+                validateIssuePhotos();
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        $(this).val('');
+    });
+
+    function validateIssuePhotos() {
+        var $error = $('#issue_photos_error');
+        if (issuePhotos.length < minIssuePhotos) {
+            $error.text('Please upload at least ' + minIssuePhotos + ' image(s) (' + issuePhotos.length + ' uploaded)').css('color', '#dc3545');
+            $('#issuePhotosContainer').addClass('border-danger');
+        } else {
+            $error.text('');
+            $('#issuePhotosContainer').removeClass('border-danger');
+        }
+    }
     @endif
 });
 </script>
