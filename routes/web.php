@@ -17,13 +17,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Admin Routes
     Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', function () {
+            return redirect()->route('admin.requests.index');
+        });
         Route::get('/requests', [ServiceController::class, 'adminIndex'])->name('requests.index');
         Route::get('/requests/{id}', [ServiceController::class, 'adminShow'])->name('requests.show');
         Route::put('/requests/{id}', [ServiceController::class, 'adminUpdate'])->name('requests.update');
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

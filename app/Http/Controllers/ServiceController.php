@@ -85,9 +85,19 @@ class ServiceController extends Controller
         return redirect()->route('service.index')->with('success', 'Service request submitted successfully! We will contact you soon.');
     }
 
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
-        $requests = ServiceRequest::orderBy('created_at', 'desc')->paginate(20);
+        $query = ServiceRequest::orderBy('created_at', 'desc');
+        
+        if ($request->has('service_type') && $request->service_type) {
+            $query->where('service_type', $request->service_type);
+        }
+        
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+        
+        $requests = $query->paginate(20)->withQueryString();
         return view('admin.requests.index', compact('requests'));
     }
 
