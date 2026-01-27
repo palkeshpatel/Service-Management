@@ -17,6 +17,18 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 2px solid var(--border-color);
             height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-card .card-body {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .service-card .card-text {
+            flex-grow: 1;
         }
 
         .service-card:hover {
@@ -155,12 +167,14 @@
         <div class="container">
             <h4 class="mb-3">Need Assistance?</h4>
             <p class="mb-2">
-                <i class="bi bi-envelope me-2"></i>
-                <a href="mailto:service@yuvaanenergy.com" class="text-decoration-none">service@yuvaanenergy.com</a>
+                <i class="bi bi-envelope me-2" style="color: var(--primary-color);"></i>
+                <a href="mailto:service@yuvaanenergy.com" class="text-decoration-none"
+                    style="color: var(--primary-color); font-weight: 500;">service@yuvaanenergy.com</a>
             </p>
             <p class="mb-0">
-                <i class="bi bi-telephone me-2"></i>
-                <a href="tel:9274100819" class="text-decoration-none">9274100819</a>
+                <i class="bi bi-telephone me-2" style="color: var(--primary-color);"></i>
+                <a href="tel:9274100819" class="text-decoration-none"
+                    style="color: var(--primary-color); font-weight: 500;">9274100819</a>
             </p>
         </div>
     </div>
