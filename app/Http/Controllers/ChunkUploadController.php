@@ -22,6 +22,7 @@ class ChunkUploadController extends Controller
             'total_chunks' => 'required|integer',
             'file_uuid' => 'required|string',
             'file_name' => 'required|string',
+            'file_type' => 'nullable|string|in:video,image',
         ]);
 
         $file = $request->file('file');
@@ -29,6 +30,19 @@ class ChunkUploadController extends Controller
         $totalChunks = $request->input('total_chunks');
         $fileUuid = $request->input('file_uuid');
         $fileName = $request->input('file_name');
+        $fileType = $request->input('file_type', 'video');
+
+        // Server-side extension validation
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        if ($fileType === 'image') {
+            if (!in_array($extension, ['jpg', 'jpeg', 'png'])) {
+                return $this->errorResponse('Invalid image format. Allowed: jpg, jpeg, png', 422);
+            }
+        } else {
+             if (!in_array($extension, ['mp4', 'avi', 'mov', 'wmv'])) {
+                return $this->errorResponse('Invalid video format. Allowed: mp4, avi, mov, wmv', 422);
+            }
+        }
 
         // Create a temporary directory for this upload
         $tempPath = 'temp_uploads/' . $fileUuid;

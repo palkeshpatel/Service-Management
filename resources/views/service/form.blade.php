@@ -1739,7 +1739,7 @@ $(document).ready(function() {
         });
     }
 
-    function uploadFileInChunks(file, progressCallback, successCallback, errorCallback) {
+    function uploadFileInChunks(file, type, progressCallback, successCallback, errorCallback) {
         const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
         const fileUuid = uuidv4();
         let chunkIndex = 0;
@@ -1755,6 +1755,7 @@ $(document).ready(function() {
             formData.append('total_chunks', totalChunks);
             formData.append('file_uuid', fileUuid);
             formData.append('file_name', file.name);
+            formData.append('file_type', type); // Pass type for server-side validation
             
             $.ajax({
                 url: "{{ route('upload.chunk') }}",
@@ -1796,6 +1797,33 @@ $(document).ready(function() {
             const file = this.files[0];
             if (!file) return;
 
+            // File type validation
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            const validVideoTypes = ['video/mp4', 'video/avi', 'video/quicktime', 'video/x-ms-wmv'];
+            const validTypes = type === 'video' ? validVideoTypes : validImageTypes;
+
+            // Check MIME type or extension as fallback
+            const fileType = file.type;
+            const fileName = file.name.toLowerCase();
+            const isValidType = validTypes.includes(fileType) || (
+                type === 'video' ? 
+                /\.(mp4|avi|mov|wmv)$/i.test(fileName) : 
+                /\.(jpg|jpeg|png)$/i.test(fileName)
+            );
+
+            if (!isValidType) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid File Type',
+                    text: 'Please upload a valid ' + (type === 'video' ? 'video (MP4, AVI, MOV, WMV)' : 'image (JPG, PNG)') + ' file.',
+                    confirmButtonColor: '#601d57'
+                });
+                $(this).val(''); // Clear the input
+                $(hiddenInputId).val(''); // Clear hidden path
+                $(progressId).hide(); // Hide progress bar
+                return;
+            }
+
             // File size validation
             const maxSize = (type === 'video' ? 10 : 10) * 1024 * 1024; // 10MB for both (can be adjusted)
             if (file.size > maxSize) {
@@ -1821,6 +1849,7 @@ $(document).ready(function() {
 
             uploadFileInChunks(
                 file,
+                type,
                 function(progress) {
                     $progressBar.css('width', progress + '%').text(progress + '%');
                 },
@@ -1839,6 +1868,8 @@ $(document).ready(function() {
                         title: 'Upload Failed',
                         text: error
                     });
+                    $(inputId).val(''); // Clear input on failure
+                    $(hiddenInputId).val('');
                 }
             );
         });

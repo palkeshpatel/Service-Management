@@ -92,6 +92,21 @@ class ServiceRequestService
                 
                 // If it's a valid temporary path
                 if (Storage::disk('local')->exists($tempPath)) {
+                    // Validate MIME type
+                    $absolutePath = Storage::disk('local')->path($tempPath);
+                    $mimeType = mime_content_type($absolutePath);
+                    
+                    if ($config['type'] === 'image' && !str_starts_with($mimeType, 'image/')) {
+                        // Delete invalid file
+                        Storage::disk('local')->delete($tempPath);
+                        throw new Exception("Invalid file type for field {$field}. Expected image, got {$mimeType}");
+                    }
+                    if ($config['type'] === 'video' && !str_starts_with($mimeType, 'video/')) {
+                        // Delete invalid file
+                        Storage::disk('local')->delete($tempPath);
+                        throw new Exception("Invalid file type for field {$field}. Expected video, got {$mimeType}");
+                    }
+
                     $filename = basename($tempPath);
                     $newPath = 'service_attachments/' . $type . '/' . $filename;
                     
