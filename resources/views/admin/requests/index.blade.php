@@ -69,6 +69,12 @@
         margin-top: 12px;
         font-size: 0.85rem;
     }
+    .request-id {
+        font-size: 0.8rem;
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
     .request-details strong {
         color: var(--primary-color);
     }
@@ -115,7 +121,10 @@
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="request-name">{{ $request->name }}</div>
+                                <div>
+                                    <div class="request-id">{{ $request->request_id }}</div>
+                                    <div class="request-name">{{ $request->name }}</div>
+                                </div>
                                 <span class="status-badge status-{{ $request->status }}">
                                     {{ ucfirst(str_replace('_', ' ', $request->status)) }}
                                 </span>

@@ -25,9 +25,10 @@ class ServiceController extends Controller
         return view('service.form', compact('type'));
     }
 
-    public function thankYou()
+    public function thankYou(Request $request)
     {
-        return view('service.thankyou');
+        $requestId = $request->query('request_id');
+        return view('service.thankyou', compact('requestId'));
     }
 
     public function store(Request $request)

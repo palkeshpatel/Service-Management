@@ -70,7 +70,10 @@
 
 <!-- Basic Information -->
 <div class="detail-card">
-    <h4 class="mb-4 text-primary"><i class="bi bi-person me-2"></i>Basic Information</h4>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="text-primary m-0"><i class="bi bi-person me-2"></i>Basic Information</h4>
+        <span class="badge bg-secondary fs-6">ID: {{ $request->request_id }}</span>
+    </div>
     <div class="row">
         <div class="col-md-6">
             <div class="info-label">Name/Company Name</div>

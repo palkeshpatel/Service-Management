@@ -106,7 +106,7 @@
                                 procedures,
                                 pallet images, and damage photographs for comprehensive assessment and warranty processing.
                             </p>
-                            <a href="{{ route('service.form', 'panel_damage') }}" class="btn btn-primary btn-lg w-100">
+                            <a href="{{ route('service.panel_damage.create') }}" class="btn btn-primary btn-lg w-100">
                                 Submit Request <i class="bi bi-arrow-right ms-2"></i>
                             </a>
                         </div>
@@ -125,7 +125,7 @@
                                 Document electrical issues including burnt junction boxes and voltage irregularities with
                                 multimeter readings, photographs, and site documentation for technical evaluation.
                             </p>
-                            <a href="{{ route('service.form', 'junction_box') }}" class="btn btn-primary btn-lg w-100">
+                            <a href="{{ route('service.junction_box.create') }}" class="btn btn-primary btn-lg w-100">
                                 Submit Request <i class="bi bi-arrow-right ms-2"></i>
                             </a>
                         </div>
@@ -144,7 +144,7 @@
                                 Report hotspot issues and panel burn damage with comprehensive documentation including
                                 loading videos, damage photos, installation site images, and detailed issue photographs.
                             </p>
-                            <a href="{{ route('service.form', 'hotspot') }}" class="btn btn-primary btn-lg w-100">
+                            <a href="{{ route('service.hotspot.create') }}" class="btn btn-primary btn-lg w-100">
                                 Submit Request <i class="bi bi-arrow-right ms-2"></i>
                             </a>
                         </div>

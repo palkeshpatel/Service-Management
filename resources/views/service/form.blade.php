@@ -266,7 +266,7 @@
 
 <div class="container">
     <div class="form-section">
-        <form id="serviceForm" action="{{ route('service.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="serviceForm" action="{{ $type === 'panel_damage' ? route('service.panel_damage.store') : ($type === 'junction_box' ? route('service.junction_box.store') : route('service.hotspot.store')) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="service_type" value="{{ $type }}">
 
@@ -809,7 +809,7 @@ $(document).ready(function() {
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = response.redirect;
+                            window.location.href = response.data && response.data.redirect ? response.data.redirect : response.redirect;
                         }
                     });
                 }
@@ -1074,8 +1074,12 @@ $(document).ready(function() {
                 'X-Requested-With': 'XMLHttpRequest'
             },
             success: function(response) {
+                console.log('Full Server Response:', response);
                 hideLoader();
                 if (response.success) {
+                    var redirectUrl = response.data && response.data.redirect ? response.data.redirect : response.redirect;
+                    console.log('Detected Redirect URL:', redirectUrl);
+
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -1084,7 +1088,8 @@ $(document).ready(function() {
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = response.redirect;
+                            console.log('Redirecting to:', redirectUrl);
+                            window.location.href = redirectUrl;
                         }
                     });
                 }

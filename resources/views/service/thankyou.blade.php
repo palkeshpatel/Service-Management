@@ -95,6 +95,13 @@
         </div>
         
         <h2 class="mb-4" style="color: var(--primary-color);">Thank You!</h2>
+
+        @if(isset($requestId))
+        <div class="alert alert-success d-inline-block px-4 py-2 mb-4">
+            <h5 class="m-0">Your Request ID: <strong>{{ $requestId }}</strong></h5>
+            <small>Please keep this ID for future reference</small>
+        </div>
+        @endif
         
         <p class="lead mb-4">Our Team will Connect Soon</p>
         
