@@ -564,6 +564,158 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Global Photo Arrays (must be defined before submitFormAjax)
+    var damagePhotos = [];
+    var damagePhotosHotspot = [];
+    var issuePhotos = [];
+
+    // Global Helper Functions - Consolidated for all form types
+    function showLoader() {
+        if ($('.loader-overlay').length === 0) {
+            $('body').append(`
+                <div class="loader-overlay">
+                    <div class="loader-spinner"></div>
+                </div>
+            `);
+        }
+    }
+
+    function hideLoader() {
+        $('.loader-overlay').remove();
+    }
+
+    // Global AJAX Form Submission
+    function submitFormAjax(form) {
+        var formData = new FormData(form);
+        var submitBtn = $('#submitBtn');
+        var originalHtml = submitBtn.html();
+        
+        // Add damage photos if they exist (Panel Damage)
+        if (typeof damagePhotos !== 'undefined' && Array.isArray(damagePhotos)) {
+            damagePhotos.forEach(function(photo, index) {
+                formData.append('damage_photos[]', photo.file);
+            });
+        }
+
+        // Add damage photos if they exist (Hotspot)
+        if (typeof damagePhotosHotspot !== 'undefined' && Array.isArray(damagePhotosHotspot)) {
+            damagePhotosHotspot.forEach(function(photo, index) {
+                formData.append('damage_photos[]', photo.file);
+            });
+        }
+
+        // Add issue photos if they exist (Hotspot)
+        if (typeof issuePhotos !== 'undefined' && Array.isArray(issuePhotos)) {
+            issuePhotos.forEach(function(photo, index) {
+                formData.append('issue_photos[]', photo.file);
+            });
+        }
+        
+        // Disable submit button
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
+        showLoader();
+
+        $.ajax({
+            url: $(form).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                hideLoader();
+                console.log('Full Server Response:', response);
+
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        confirmButtonColor: '#601d57',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var redirectUrl = response.data && response.data.redirect ? response.data.redirect : response.redirect;
+                            console.log('Detected Redirect URL:', redirectUrl);
+                            
+                            if (redirectUrl && redirectUrl !== 'undefined') {
+                                console.log('Redirecting to:', redirectUrl);
+                                window.location.href = redirectUrl;
+                            } else {
+                                console.error('Redirect URL is missing or invalid:', redirectUrl);
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Redirect Error',
+                                    text: 'Form submitted but redirect URL is missing.',
+                                    confirmButtonColor: '#601d57'
+                                });
+                            }
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                hideLoader();
+                submitBtn.prop('disabled', false).html(originalHtml);
+                
+                if (xhr.status === 422) {
+                    var errors = xhr.responseJSON.errors;
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.error-message').text(''); 
+                    $('.invalid-feedback').remove(); 
+                    
+                    $.each(errors, function(field, messages) {
+                        var fieldName = field.replace(/\./g, '_');
+                        var $field = $('[name="' + field + '"], [name="' + fieldName + '"], #' + field);
+                        
+                        if ($field.length) {
+                            $field.addClass('is-invalid');
+                            $field.css('border-color', '#dc3545');
+                            var errorMsg = Array.isArray(messages) ? messages[0] : messages;
+                            
+                            if ($field.attr('type') === 'file') {
+                                var $errorContainer = $field.closest('.mb-4').find('.error-message');
+                                if ($errorContainer.length) {
+                                    $errorContainer.text(errorMsg).css('color', '#dc3545');
+                                } else {
+                                    $field.after('<div class="error-message text-danger small mt-1">' + errorMsg + '</div>');
+                                }
+                            } else {
+                                $field.after('<div class="invalid-feedback d-block" style="color: #dc3545 !important;">' + errorMsg + '</div>');
+                            }
+                        }
+                    });
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        html: 'Please correct the errors in the form',
+                        confirmButtonColor: '#601d57'
+                    });
+                    
+                    setTimeout(function() {
+                        var firstError = $('.is-invalid').first();
+                        if (firstError.length) {
+                            $('html, body').animate({
+                                scrollTop: firstError.offset().top - 100
+                            }, 500);
+                        }
+                    }, 300);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
+                        confirmButtonColor: '#601d57'
+                    });
+                }
+            }
+        });
+    }
+
 $(document).ready(function() {
     @if($type === 'panel_damage')
     // Custom validation methods
@@ -792,95 +944,6 @@ $(document).ready(function() {
         }
     });
 
-    // AJAX Form Submission
-    function submitFormAjax(form) {
-        var formData = new FormData(form);
-        var submitBtn = $('#submitBtn');
-        var originalHtml = submitBtn.html();
-        
-        // Disable submit button
-        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
-
-        $.ajax({
-            url: $(form).attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            success: function(response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        confirmButtonColor: '#601d57',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = response.data && response.data.redirect ? response.data.redirect : response.redirect;
-                        }
-                    });
-                }
-            },
-            error: function(xhr) {
-                submitBtn.prop('disabled', false).html(originalHtml);
-                
-                if (xhr.status === 422) {
-                    // Validation errors
-                    var errors = xhr.responseJSON.errors;
-                    
-                    // Clear previous errors
-                    $('.is-invalid').removeClass('is-invalid');
-                    $('.error-message').remove();
-                    
-                    // Display new errors
-                    $.each(errors, function(field, messages) {
-                        var fieldName = field.replace(/\./g, '_');
-                        var $field = $('[name="' + field + '"], [name="' + fieldName + '"]');
-                        
-                        if ($field.length) {
-                            $field.addClass('is-invalid');
-                            var errorMsg = Array.isArray(messages) ? messages[0] : messages;
-                            
-                            // Add error message
-                            if ($field.attr('type') === 'file') {
-                                $field.after('<div class="error-message text-danger small mt-1">' + errorMsg + '</div>');
-                            } else {
-                                $field.after('<div class="error-message invalid-feedback d-block">' + errorMsg + '</div>');
-                            }
-                        }
-                    });
-                    
-                    // Show error alert
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        html: 'Please correct the errors in the form',
-                        confirmButtonColor: '#601d57'
-                    });
-                    
-                    // Scroll to first error
-                    setTimeout(function() {
-                        $('html, body').animate({
-                            scrollTop: $('.is-invalid').first().offset().top - 100
-        }, 500);
-    }, 300);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
-                        confirmButtonColor: '#601d57'
-                    });
-                }
-            }
-        });
-    }
-
     // Loader Functions (from Warehouse Management System)
     function showLoader() {
         if ($('.loader-overlay').length === 0) {
@@ -958,7 +1021,7 @@ $(document).ready(function() {
     }
 
     // Damage Photos - Dynamic add/remove
-    var damagePhotos = [];
+    damagePhotos = [];
     var maxDamagePhotos = 10;
     var minDamagePhotos = 2;
 
@@ -1060,114 +1123,7 @@ $(document).ready(function() {
         }
     }
 
-    // Update AJAX submission to include damage photos
-    function submitFormAjax(form) {
-        var formData = new FormData(form);
-        var submitBtn = $('#submitBtn');
-        var originalHtml = submitBtn.html();
-        
-        // Add damage photos to form data
-        damagePhotos.forEach(function(photo, index) {
-            formData.append('damage_photos[]', photo.file);
-        });
-        
-        // Disable submit button
-        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
-        showLoader();
-
-        $.ajax({
-            url: $(form).attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            success: function(response) {
-                console.log('Full Server Response:', response);
-                hideLoader();
-                if (response.success) {
-                    var redirectUrl = response.data && response.data.redirect ? response.data.redirect : response.redirect;
-                    console.log('Detected Redirect URL:', redirectUrl);
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        confirmButtonColor: '#601d57',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            console.log('Redirecting to:', redirectUrl);
-                            window.location.href = redirectUrl;
-                        }
-                    });
-                }
-            },
-            error: function(xhr) {
-                hideLoader();
-                submitBtn.prop('disabled', false).html(originalHtml);
-                
-                if (xhr.status === 422) {
-                    // Validation errors
-                    var errors = xhr.responseJSON.errors;
-                    
-                    // Clear previous errors
-                    $('.is-invalid').removeClass('is-invalid');
-                    $('.error-message').text('');
-                    $('.invalid-feedback').remove();
-                    
-                    // Display new errors with red color
-                    $.each(errors, function(field, messages) {
-                        var fieldName = field.replace(/\./g, '_');
-                        var $field = $('[name="' + field + '"], [name="' + fieldName + '"]');
-                        
-                        if ($field.length) {
-                            $field.addClass('is-invalid');
-                            $field.css('border-color', '#dc3545');
-                            var errorMsg = Array.isArray(messages) ? messages[0] : messages;
-                            
-                            // Add error message with red color
-                            if ($field.attr('type') === 'file') {
-                                var $errorContainer = $field.closest('.mb-4').find('.error-message');
-                                if ($errorContainer.length) {
-                                    $errorContainer.text(errorMsg).css('color', '#dc3545');
-                                } else {
-                                    $field.after('<div class="error-message text-danger small mt-1">' + errorMsg + '</div>');
-                                }
-                            } else {
-                                $field.after('<div class="invalid-feedback d-block" style="color: #dc3545 !important;">' + errorMsg + '</div>');
-                            }
-                        }
-                    });
-                    
-                    // Show error alert
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        html: 'Please correct the errors in the form',
-                        confirmButtonColor: '#601d57'
-                    });
-                    
-                    // Scroll to first error
-                    setTimeout(function() {
-                        $('html, body').animate({
-                            scrollTop: $('.is-invalid').first().offset().top - 100
-                        }, 500);
-                    }, 300);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
-                        confirmButtonColor: '#601d57'
-                    });
-                }
-            }
-        });
-    }
+    // AJAX Form Submission handled by global function
     @elseif($type === 'junction_box')
     // Custom validation methods
     $.validator.addMethod("phoneFormat", function(value, element) {
@@ -1339,96 +1295,7 @@ $(document).ready(function() {
         }
     });
 
-    // AJAX Form Submission
-    function submitFormAjax(form) {
-        var formData = new FormData(form);
-        var submitBtn = $('#submitBtn');
-        var originalHtml = submitBtn.html();
-        
-        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
-        showLoader();
-
-        $.ajax({
-            url: $(form).attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            success: function(response) {
-                hideLoader();
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        confirmButtonColor: '#601d57',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = response.redirect;
-                        }
-                    });
-                }
-            },
-            error: function(xhr) {
-                hideLoader();
-                submitBtn.prop('disabled', false).html(originalHtml);
-                
-                if (xhr.status === 422) {
-                    var errors = xhr.responseJSON.errors;
-                    $('.is-invalid').removeClass('is-invalid');
-                    $('.error-message').text('');
-                    $('.invalid-feedback').remove();
-                    
-                    $.each(errors, function(field, messages) {
-                        var fieldName = field.replace(/\./g, '_');
-                        var $field = $('[name="' + field + '"], [name="' + fieldName + '"], #' + field);
-                        
-                        if ($field.length) {
-                            $field.addClass('is-invalid');
-                            $field.css('border-color', '#dc3545');
-                            var errorMsg = Array.isArray(messages) ? messages[0] : messages;
-                            
-                            if ($field.attr('type') === 'file') {
-                                var $errorContainer = $field.closest('.mb-4').find('.error-message');
-                                if ($errorContainer.length) {
-                                    $errorContainer.text(errorMsg).css('color', '#dc3545');
-                                } else {
-                                    $field.after('<div class="error-message text-danger small mt-1">' + errorMsg + '</div>');
-                                }
-                            } else {
-                                $field.after('<div class="invalid-feedback d-block" style="color: #dc3545 !important;">' + errorMsg + '</div>');
-                            }
-                        }
-                    });
-                    
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        html: 'Please correct the errors in the form',
-                        confirmButtonColor: '#601d57'
-                    });
-                    
-                    setTimeout(function() {
-                        $('html, body').animate({
-                            scrollTop: $('.is-invalid').first().offset().top - 100
-                        }, 500);
-                    }, 300);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
-                        confirmButtonColor: '#601d57'
-                    });
-                }
-            }
-        });
-    }
+    // AJAX Form Submission handled by global function
 
     // Loader Functions
     function showLoader() {
@@ -1631,106 +1498,7 @@ $(document).ready(function() {
         }
     });
 
-    // AJAX Form Submission
-    function submitFormAjax(form) {
-        var formData = new FormData(form);
-        var submitBtn = $('#submitBtn');
-        var originalHtml = submitBtn.html();
-        
-        // Add damage photos to form data
-        damagePhotosHotspot.forEach(function(photo, index) {
-            formData.append('damage_photos[]', photo.file);
-        });
-        
-        // Add issue photos to form data
-        issuePhotos.forEach(function(photo, index) {
-            formData.append('issue_photos[]', photo.file);
-        });
-        
-        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
-        showLoader();
-
-        $.ajax({
-            url: $(form).attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            success: function(response) {
-                hideLoader();
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        confirmButtonColor: '#601d57',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = response.redirect;
-                        }
-                    });
-                }
-            },
-            error: function(xhr) {
-                hideLoader();
-                submitBtn.prop('disabled', false).html(originalHtml);
-                
-                if (xhr.status === 422) {
-                    var errors = xhr.responseJSON.errors;
-                    $('.is-invalid').removeClass('is-invalid');
-                    $('.error-message').text('');
-                    $('.invalid-feedback').remove();
-                    
-                    $.each(errors, function(field, messages) {
-                        var fieldName = field.replace(/\./g, '_');
-                        var $field = $('[name="' + field + '"], [name="' + fieldName + '"], #' + field);
-                        
-                        if ($field.length) {
-                            $field.addClass('is-invalid');
-                            $field.css('border-color', '#dc3545');
-                            var errorMsg = Array.isArray(messages) ? messages[0] : messages;
-                            
-                            if ($field.attr('type') === 'file') {
-                                var $errorContainer = $field.closest('.mb-4').find('.error-message');
-                                if ($errorContainer.length) {
-                                    $errorContainer.text(errorMsg).css('color', '#dc3545');
-                                } else {
-                                    $field.after('<div class="error-message text-danger small mt-1">' + errorMsg + '</div>');
-                                }
-                            } else {
-                                $field.after('<div class="invalid-feedback d-block" style="color: #dc3545 !important;">' + errorMsg + '</div>');
-                            }
-                        }
-                    });
-                    
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        html: 'Please correct the errors in the form',
-                        confirmButtonColor: '#601d57'
-                    });
-                    
-                    setTimeout(function() {
-                        $('html, body').animate({
-                            scrollTop: $('.is-invalid').first().offset().top - 100
-                        }, 500);
-                    }, 300);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
-                        confirmButtonColor: '#601d57'
-                    });
-                }
-            }
-        });
-    }
+    // AJAX Form Submission handled by global function
 
     // Loader Functions
     function showLoader() {
@@ -1748,7 +1516,7 @@ $(document).ready(function() {
     }
 
     // Damage Photos Hotspot - Dynamic add/remove
-    var damagePhotosHotspot = [];
+    damagePhotosHotspot = [];
     var maxDamagePhotosHotspot = 10;
     var minDamagePhotosHotspot = 2;
 
@@ -1847,7 +1615,7 @@ $(document).ready(function() {
     }
 
     // Issue Photos - Dynamic add/remove
-    var issuePhotos = [];
+    issuePhotos = [];
     var maxIssuePhotos = 10;
     var minIssuePhotos = 2;
 
