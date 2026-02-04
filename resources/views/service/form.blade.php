@@ -1009,6 +1009,7 @@ $(document).ready(function() {
                 $preview.attr('src', '').hide();
                 $btn.find('.file-name').text('Invalid format').addClass('text-danger');
                 $input.val('');
+                validatePalletImages();
                 return;
             }
             
@@ -1017,6 +1018,7 @@ $(document).ready(function() {
                 $preview.attr('src', '').hide();
                 $btn.find('.file-name').text('File too large').addClass('text-danger');
                 $input.val('');
+                validatePalletImages();
                 return;
             }
             
@@ -1026,7 +1028,6 @@ $(document).ready(function() {
                 $preview.attr('src', e.target.result).show();
                 $btn.addClass('has-file');
                 $btn.find('.file-name').text(file.name).removeClass('text-danger');
-                palletImageCount++;
                 validatePalletImages();
             };
             reader.readAsDataURL(file);
@@ -1034,14 +1035,19 @@ $(document).ready(function() {
             $btn.removeClass('has-file');
             $preview.attr('src', '').hide();
             $btn.find('.file-name').text('');
-            if (palletImageCount > 0) {
-                palletImageCount--;
-            }
             validatePalletImages();
         }
     });
 
     function validatePalletImages() {
+        var count = 0;
+        $('.pallet-image-input').each(function() {
+            if ($(this).val()) {
+                count++;
+            }
+        });
+        palletImageCount = count;
+
         var $error = $('#pallet_images_error');
         if (palletImageCount < 4) {
             $error.text('Please upload exactly 4 images (' + palletImageCount + '/4 uploaded)');
