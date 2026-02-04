@@ -179,7 +179,7 @@ class ServiceController extends Controller
             $baseRules['damage_photos.*'] = 'required|image|mimes:jpeg,jpg,png|max:5120';
             $baseRules['pallet_id_slip'] = 'required|image|mimes:jpeg,jpg,png|max:5120';
             $baseRules['installation_site'] = 'required|image|mimes:jpeg,jpg,png|max:5120';
-            $baseRules['issue_photos'] = 'required|array|min:1|max:10';
+            $baseRules['issue_photos'] = 'required|array|min:2|max:10';
             $baseRules['issue_photos.*'] = 'required|image|mimes:jpeg,jpg,png|max:5120';
         }
 

@@ -385,7 +385,7 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Full photo of Damage panels from front side & back side</label>
-                    <small class="text-muted d-block mb-2">Upload at least 1 image, maximum 10 images (JPG, PNG, Max 5MB each)</small>
+                    <small class="text-muted d-block mb-2">Upload at least 2 images, maximum 10 images (JPG, PNG, Max 5MB each)</small>
                     <div class="image-preview-container" id="damagePhotosContainer">
                         <!-- Images will be added here dynamically -->
                     </div>
@@ -518,7 +518,7 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Photos of issue</label>
-                    <small class="text-muted d-block mb-2">Upload at least 1 image, maximum 10 images (JPG, PNG, Max 5MB each)</small>
+                    <small class="text-muted d-block mb-2">Upload at least 2 images, maximum 10 images (JPG, PNG, Max 5MB each)</small>
                     <div class="image-preview-container" id="issuePhotosContainer">
                         <!-- Images will be added here dynamically -->
                     </div>
@@ -948,7 +948,7 @@ $(document).ready(function() {
     // Damage Photos - Dynamic add/remove
     var damagePhotos = [];
     var maxDamagePhotos = 10;
-    var minDamagePhotos = 1;
+    var minDamagePhotos = 2;
 
     $('#addDamagePhotoBtn').on('click', function() {
         if (damagePhotos.length >= maxDamagePhotos) {
@@ -1832,7 +1832,7 @@ $(document).ready(function() {
     // Issue Photos - Dynamic add/remove
     var issuePhotos = [];
     var maxIssuePhotos = 10;
-    var minIssuePhotos = 1;
+    var minIssuePhotos = 2;
 
     $('#addIssuePhotoBtn').on('click', function() {
         if (issuePhotos.length >= maxIssuePhotos) {
