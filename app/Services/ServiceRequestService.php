@@ -22,7 +22,7 @@ class ServiceRequestService
     public function createServiceRequest(array $validatedData, array $files, string $type)
     {
         try {
-            $attachments = $this->handleUploads($files, $type);
+            $attachments = $this->handleUploads($files, $type, $validatedData);
             
             // Generate unique request ID
             $requestId = 'SR-' . date('Ymd') . '-' . mt_rand(1000, 9999);
@@ -63,9 +63,10 @@ class ServiceRequestService
      *
      * @param array $files Files from request
      * @param string $type Service type
+     * @param array $data Validated data (for chunk uploads)
      * @return array
      */
-    private function handleUploads(array $files, string $type): array
+    private function handleUploads(array $files, string $type, array $data = []): array
     {
         $attachments = [];
         $attachmentFields = $this->getAttachmentFields($type);
@@ -85,9 +86,43 @@ class ServiceRequestService
                     $attachments[$field] = $this->uploadFile($uploadedFiles, $type, $config['type']);
                 }
             }
+            // Check for pre-uploaded file path (chunk upload)
+            elseif (isset($data[$field . '_path']) && !empty($data[$field . '_path'])) {
+                $tempPath = $data[$field . '_path'];
+                
+                // If it's a valid temporary path
+                if (Storage::disk('local')->exists($tempPath)) {
+                    $filename = basename($tempPath);
+                    $newPath = 'service_attachments/' . $type . '/' . $filename;
+                    
+                    // Move from local disk (temp) to public disk (final)
+                    $content = Storage::disk('local')->get($tempPath);
+                    Storage::disk('public')->put($newPath, $content);
+                    
+                    // Delete from temp
+                    Storage::disk('local')->delete($tempPath);
+                    
+                    $attachments[$field] = [
+                        'path' => $newPath,
+                        'original_name' => $this->getOriginalNameFromTemp($filename),
+                        'type' => $config['type'],
+                    ];
+                }
+            }
         }
 
         return $attachments;
+    }
+
+    private function getOriginalNameFromTemp($filename)
+    {
+        // Temp filename format: random_string_original_name
+        // We can try to extract the original name by removing the first 41 chars (40 random + 1 underscore)
+        // But Str::random(40) is used in ChunkUploadController
+        if (strlen($filename) > 41) {
+            return substr($filename, 41);
+        }
+        return $filename;
     }
 
     /**

@@ -337,7 +337,11 @@
                 <!-- Panel Damage Attachments -->
                 <div class="mb-4">
                     <label class="form-label required-field">Method of Loading & Unloading from vehicle (Video)</label>
-                    <input type="file" class="form-control @error('loading_video') is-invalid @enderror" name="loading_video" accept="video/*" required>
+                    <input type="file" class="form-control @error('loading_video') is-invalid @enderror" name="loading_video" accept="video/*" id="loading_video" required>
+                    <input type="hidden" name="loading_video_path" id="loading_video_path">
+                    <div id="loading_video_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Max 10MB, Video format (MP4, AVI, MOV, WMV)</small>
                     @error('loading_video')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -429,8 +433,12 @@
             @elseif($type === 'junction_box')
                 <!-- Junction Box Attachments -->
                 <div class="mb-4">
-                    <label class="form-label required-field">Voltage with Multimeter (Video)</label>
+                    <label class="form-label required-field">Video of voltage measuring</label>
                     <input type="file" class="form-control @error('voltage_video') is-invalid @enderror" name="voltage_video" accept="video/*" id="voltage_video" required>
+                    <input type="hidden" name="voltage_video_path" id="voltage_video_path">
+                    <div id="voltage_video_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Max 10MB, Video format (MP4, AVI, MOV, WMV)</small>
                     <div class="error-message text-danger small mt-1" id="voltage_video_error"></div>
                     @error('voltage_video')
@@ -473,6 +481,10 @@
                 <div class="mb-4">
                     <label class="form-label required-field">Method of Loading & Unloading from vehicle (Video)</label>
                     <input type="file" class="form-control @error('loading_video') is-invalid @enderror" name="loading_video" accept="video/*" id="loading_video_hotspot" required>
+                    <input type="hidden" name="loading_video_path" id="loading_video_hotspot_path">
+                    <div id="loading_video_hotspot_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Max 10MB, Video format (MP4, AVI, MOV, WMV)</small>
                     <div class="error-message text-danger small mt-1" id="loading_video_hotspot_error"></div>
                     @error('loading_video')
@@ -1916,6 +1928,127 @@ $(document).ready(function() {
         }
     }
     @endif
+
+    // Chunk Upload Implementation
+    const CHUNK_SIZE = 1024 * 1024; // 1MB
+
+    function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    function uploadFileInChunks(file, progressCallback, successCallback, errorCallback) {
+        const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+        const fileUuid = uuidv4();
+        let chunkIndex = 0;
+
+        function uploadNextChunk() {
+            const start = chunkIndex * CHUNK_SIZE;
+            const end = Math.min(start + CHUNK_SIZE, file.size);
+            const chunk = file.slice(start, end);
+
+            const formData = new FormData();
+            formData.append('file', chunk);
+            formData.append('chunk_index', chunkIndex);
+            formData.append('total_chunks', totalChunks);
+            formData.append('file_uuid', fileUuid);
+            formData.append('file_name', file.name);
+            
+            $.ajax({
+                url: "{{ route('upload.chunk') }}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        chunkIndex++;
+                        const progress = Math.round((chunkIndex / totalChunks) * 100);
+                        progressCallback(progress);
+
+                        if (chunkIndex < totalChunks) {
+                            uploadNextChunk();
+                        } else {
+                            successCallback(response.data);
+                        }
+                    } else {
+                        errorCallback(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    errorCallback(xhr.responseJSON?.message || 'Upload failed');
+                }
+            });
+        }
+
+        uploadNextChunk();
+    }
+
+    function handleVideoUpload(inputId, hiddenInputId, progressId) {
+        if ($(inputId).length === 0) return; // Skip if input doesn't exist
+
+        $(inputId).on('change', function() {
+            const file = this.files[0];
+            if (!file) return;
+
+            // File size validation (10MB)
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Too Large',
+                    text: 'Video file size must be less than 10MB',
+                    confirmButtonColor: '#601d57'
+                });
+                $(this).val(''); // Clear the input
+                $(hiddenInputId).val(''); // Clear hidden path
+                $(progressId).hide(); // Hide progress bar
+                return;
+            }
+
+            const $progressBar = $(progressId).find('.progress-bar');
+            $(progressId).show();
+            $('#submitBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Uploading Video...');
+            
+            // Clear previous hidden input
+            $(hiddenInputId).val('');
+            $progressBar.removeClass('bg-success bg-danger').addClass('bg-info').css('width', '0%').text('0%');
+
+            uploadFileInChunks(
+                file,
+                function(progress) {
+                    $progressBar.css('width', progress + '%').text(progress + '%');
+                },
+                function(data) {
+                    $(hiddenInputId).val(data.path);
+                    $progressBar.removeClass('bg-info').addClass('bg-success').text('Upload Complete');
+                    $('#submitBtn').prop('disabled', false).html('<i class="bi bi-send me-2"></i>Submit Request');
+                    
+                    console.log('Video uploaded successfully:', data.path);
+                },
+                function(error) {
+                    $progressBar.removeClass('bg-info').addClass('bg-danger').text('Error: ' + error);
+                    $('#submitBtn').prop('disabled', false).html('<i class="bi bi-send me-2"></i>Submit Request');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Upload Failed',
+                        text: error
+                    });
+                }
+            );
+        });
+    }
+
+    // Initialize listeners
+    handleVideoUpload('#loading_video', '#loading_video_path', '#loading_video_progress');
+    handleVideoUpload('#voltage_video', '#voltage_video_path', '#voltage_video_progress');
+    handleVideoUpload('#loading_video_hotspot', '#loading_video_hotspot_path', '#loading_video_hotspot_progress');
+
 });
 </script>
 @endpush

@@ -5,9 +5,11 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\PanelDamageController;
 use App\Http\Controllers\JunctionBoxController;
 use App\Http\Controllers\HotspotController;
+use App\Http\Controllers\ChunkUploadController;
 use Illuminate\Support\Facades\Route;
 
 // Public Service Routes
+Route::post('/upload/chunk', [ChunkUploadController::class, 'upload'])->name('upload.chunk');
 Route::get('/', [ServiceController::class, 'index'])->name('service.index');
 Route::get('/service/thank-you', [ServiceController::class, 'thankYou'])->name('service.thankyou');
 
