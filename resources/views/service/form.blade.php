@@ -405,7 +405,11 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">Pallet ID slip</label>
-                    <input type="file" class="form-control @error('pallet_id_slip') is-invalid @enderror" name="pallet_id_slip" accept="image/*" required>
+                    <input type="file" class="form-control @error('pallet_id_slip') is-invalid @enderror" name="pallet_id_slip" accept="image/*" id="pallet_id_slip" required>
+                    <input type="hidden" name="pallet_id_slip_path" id="pallet_id_slip_path">
+                    <div id="pallet_id_slip_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
                     @error('pallet_id_slip')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -414,7 +418,11 @@
 
                 <div class="mb-4">
                     <label class="form-label required-field">LR Copy</label>
-                    <input type="file" class="form-control @error('lr_copy') is-invalid @enderror" name="lr_copy" accept="image/*" required>
+                    <input type="file" class="form-control @error('lr_copy') is-invalid @enderror" name="lr_copy" accept="image/*" id="lr_copy" required>
+                    <input type="hidden" name="lr_copy_path" id="lr_copy_path">
+                    <div id="lr_copy_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
                     @error('lr_copy')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -423,7 +431,11 @@
 
                 <div class="mb-4">
                     <label class="form-label">Photo of Position of Pallet in vehicle</label>
-                    <input type="file" class="form-control @error('pallet_position') is-invalid @enderror" name="pallet_position" accept="image/*">
+                    <input type="file" class="form-control @error('pallet_position') is-invalid @enderror" name="pallet_position" accept="image/*" id="pallet_position">
+                    <input type="hidden" name="pallet_position_path" id="pallet_position_path">
+                    <div id="pallet_position_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB) - Optional</small>
                     @error('pallet_position')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -449,6 +461,10 @@
                 <div class="mb-4">
                     <label class="form-label required-field">Panel Junction box burnt</label>
                     <input type="file" class="form-control @error('junction_box_photo') is-invalid @enderror" name="junction_box_photo" accept="image/*" id="junction_box_photo" required>
+                    <input type="hidden" name="junction_box_photo_path" id="junction_box_photo_path">
+                    <div id="junction_box_photo_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
                     <div class="error-message text-danger small mt-1" id="junction_box_photo_error"></div>
                     @error('junction_box_photo')
@@ -459,6 +475,10 @@
                 <div class="mb-4">
                     <label class="form-label required-field">Voltage power</label>
                     <input type="file" class="form-control @error('voltage_power') is-invalid @enderror" name="voltage_power" accept="image/*" id="voltage_power" required>
+                    <input type="hidden" name="voltage_power_path" id="voltage_power_path">
+                    <div id="voltage_power_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
                     <div class="error-message text-danger small mt-1" id="voltage_power_error"></div>
                     @error('voltage_power')
@@ -469,6 +489,10 @@
                 <div class="mb-4">
                     <label class="form-label required-field">Site Photograph</label>
                     <input type="file" class="form-control @error('site_photograph') is-invalid @enderror" name="site_photograph" accept="image/*" id="site_photograph" required>
+                    <input type="hidden" name="site_photograph_path" id="site_photograph_path">
+                    <div id="site_photograph_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
                     <div class="error-message text-danger small mt-1" id="site_photograph_error"></div>
                     @error('site_photograph')
@@ -511,6 +535,10 @@
                 <div class="mb-4">
                     <label class="form-label required-field">Pallet ID slip</label>
                     <input type="file" class="form-control @error('pallet_id_slip') is-invalid @enderror" name="pallet_id_slip" accept="image/*" id="pallet_id_slip_hotspot" required>
+                    <input type="hidden" name="pallet_id_slip_path" id="pallet_id_slip_hotspot_path">
+                    <div id="pallet_id_slip_hotspot_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
                     <div class="error-message text-danger small mt-1" id="pallet_id_slip_hotspot_error"></div>
                     @error('pallet_id_slip')
@@ -521,6 +549,10 @@
                 <div class="mb-4">
                     <label class="form-label required-field">Installation Site Photograph</label>
                     <input type="file" class="form-control @error('installation_site') is-invalid @enderror" name="installation_site" accept="image/*" id="installation_site" required>
+                    <input type="hidden" name="installation_site_path" id="installation_site_path">
+                    <div id="installation_site_progress" class="progress mt-2" style="display:none; height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
                     <small class="text-muted">Image format (JPG, PNG, Max 5MB)</small>
                     <div class="error-message text-danger small mt-1" id="installation_site_error"></div>
                     @error('installation_site')
@@ -1757,20 +1789,20 @@ $(document).ready(function() {
         uploadNextChunk();
     }
 
-    function handleVideoUpload(inputId, hiddenInputId, progressId) {
+    function handleChunkUpload(inputId, hiddenInputId, progressId, type = 'video') {
         if ($(inputId).length === 0) return; // Skip if input doesn't exist
 
         $(inputId).on('change', function() {
             const file = this.files[0];
             if (!file) return;
 
-            // File size validation (10MB)
-            const maxSize = 10 * 1024 * 1024; // 10MB
+            // File size validation
+            const maxSize = (type === 'video' ? 10 : 10) * 1024 * 1024; // 10MB for both (can be adjusted)
             if (file.size > maxSize) {
                 Swal.fire({
                     icon: 'error',
                     title: 'File Too Large',
-                    text: 'Video file size must be less than 10MB',
+                    text: (type === 'video' ? 'Video' : 'Image') + ' file size must be less than 10MB',
                     confirmButtonColor: '#601d57'
                 });
                 $(this).val(''); // Clear the input
@@ -1781,7 +1813,7 @@ $(document).ready(function() {
 
             const $progressBar = $(progressId).find('.progress-bar');
             $(progressId).show();
-            $('#submitBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Uploading Video...');
+            $('#submitBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Uploading ' + (type === 'video' ? 'Video' : 'Image') + '...');
             
             // Clear previous hidden input
             $(hiddenInputId).val('');
@@ -1797,7 +1829,7 @@ $(document).ready(function() {
                     $progressBar.removeClass('bg-info').addClass('bg-success').text('Upload Complete');
                     $('#submitBtn').prop('disabled', false).html('<i class="bi bi-send me-2"></i>Submit Request');
                     
-                    console.log('Video uploaded successfully:', data.path);
+                    console.log((type === 'video' ? 'Video' : 'Image') + ' uploaded successfully:', data.path);
                 },
                 function(error) {
                     $progressBar.removeClass('bg-info').addClass('bg-danger').text('Error: ' + error);
@@ -1813,9 +1845,24 @@ $(document).ready(function() {
     }
 
     // Initialize listeners
-    handleVideoUpload('#loading_video', '#loading_video_path', '#loading_video_progress');
-    handleVideoUpload('#voltage_video', '#voltage_video_path', '#voltage_video_progress');
-    handleVideoUpload('#loading_video_hotspot', '#loading_video_hotspot_path', '#loading_video_hotspot_progress');
+    // Videos
+    handleChunkUpload('#loading_video', '#loading_video_path', '#loading_video_progress', 'video');
+    handleChunkUpload('#voltage_video', '#voltage_video_path', '#voltage_video_progress', 'video');
+    handleChunkUpload('#loading_video_hotspot', '#loading_video_hotspot_path', '#loading_video_hotspot_progress', 'video');
+
+    // Images (Panel Damage)
+    handleChunkUpload('#pallet_id_slip', '#pallet_id_slip_path', '#pallet_id_slip_progress', 'image');
+    handleChunkUpload('#lr_copy', '#lr_copy_path', '#lr_copy_progress', 'image');
+    handleChunkUpload('#pallet_position', '#pallet_position_path', '#pallet_position_progress', 'image');
+
+    // Images (Junction Box)
+    handleChunkUpload('#junction_box_photo', '#junction_box_photo_path', '#junction_box_photo_progress', 'image');
+    handleChunkUpload('#voltage_power', '#voltage_power_path', '#voltage_power_progress', 'image');
+    handleChunkUpload('#site_photograph', '#site_photograph_path', '#site_photograph_progress', 'image');
+
+    // Images (Hotspot)
+    handleChunkUpload('#pallet_id_slip_hotspot', '#pallet_id_slip_hotspot_path', '#pallet_id_slip_hotspot_progress', 'image');
+    handleChunkUpload('#installation_site', '#installation_site_path', '#installation_site_progress', 'image');
 
 });
 </script>

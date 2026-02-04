@@ -31,9 +31,12 @@ class StoreJunctionBoxRequest extends FormRequest
             'serial_number' => 'required|string|max:255',
             'voltage_video' => 'required_without:voltage_video_path|file|mimes:mp4,avi,mov,wmv|max:10240',
             'voltage_video_path' => 'required_without:voltage_video|string|nullable',
-            'junction_box_photo' => 'required|image|mimes:jpeg,jpg,png|max:5120',
-            'voltage_power' => 'required|image|mimes:jpeg,jpg,png|max:5120',
-            'site_photograph' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+            'junction_box_photo' => 'required_without:junction_box_photo_path|image|mimes:jpeg,jpg,png|max:5120',
+            'junction_box_photo_path' => 'required_without:junction_box_photo|string|nullable',
+            'voltage_power' => 'required_without:voltage_power_path|image|mimes:jpeg,jpg,png|max:5120',
+            'voltage_power_path' => 'required_without:voltage_power|string|nullable',
+            'site_photograph' => 'required_without:site_photograph_path|image|mimes:jpeg,jpg,png|max:5120',
+            'site_photograph_path' => 'required_without:site_photograph|string|nullable',
         ];
     }
 }

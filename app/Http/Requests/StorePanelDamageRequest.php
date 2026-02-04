@@ -35,9 +35,12 @@ class StorePanelDamageRequest extends FormRequest
             'pallet_images.*' => 'required|image|mimes:jpeg,jpg,png|max:5120',
             'damage_photos' => 'required|array|min:2|max:10',
             'damage_photos.*' => 'required|image|mimes:jpeg,jpg,png|max:5120',
-            'pallet_id_slip' => 'required|image|mimes:jpeg,jpg,png|max:5120',
-            'lr_copy' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+            'pallet_id_slip' => 'required_without:pallet_id_slip_path|image|mimes:jpeg,jpg,png|max:5120',
+            'pallet_id_slip_path' => 'required_without:pallet_id_slip|string|nullable',
+            'lr_copy' => 'required_without:lr_copy_path|image|mimes:jpeg,jpg,png|max:5120',
+            'lr_copy_path' => 'required_without:lr_copy|string|nullable',
             'pallet_position' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
+            'pallet_position_path' => 'nullable|string',
         ];
     }
 }

@@ -33,8 +33,10 @@ class StoreHotspotRequest extends FormRequest
             'loading_video_path' => 'required_without:loading_video|string|nullable',
             'damage_photos' => 'required|array|min:2|max:10',
             'damage_photos.*' => 'required|image|mimes:jpeg,jpg,png|max:5120',
-            'pallet_id_slip' => 'required|image|mimes:jpeg,jpg,png|max:5120',
-            'installation_site' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+            'pallet_id_slip' => 'required_without:pallet_id_slip_path|image|mimes:jpeg,jpg,png|max:5120',
+            'pallet_id_slip_path' => 'required_without:pallet_id_slip|string|nullable',
+            'installation_site' => 'required_without:installation_site_path|image|mimes:jpeg,jpg,png|max:5120',
+            'installation_site_path' => 'required_without:installation_site|string|nullable',
             'issue_photos' => 'required|array|min:2|max:10',
             'issue_photos.*' => 'required|image|mimes:jpeg,jpg,png|max:5120',
         ];
