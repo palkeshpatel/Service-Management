@@ -2,7 +2,7 @@
     <div class="sidebar-header">
         <div class="logo-container">
             <img src="{{ asset('image/logo.png') }}" alt="Yuvaan Energy Limited" class="sidebar-logo">
-            <h4 class="logo-text">Service Management</h4>
+            <h4 class="logo-text" style="font-size: 17px;">Service Management</h4>
         </div>
     </div>
     <nav class="sidebar-nav">
