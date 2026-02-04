@@ -68,6 +68,7 @@
         border-radius: 6px;
         margin-top: 12px;
         font-size: 0.85rem;
+        color: #6c757d;
     }
     .request-id {
         font-size: 0.8rem;
