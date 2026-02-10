@@ -46,6 +46,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/requests', [ServiceController::class, 'adminIndex'])->name('requests.index');
         Route::get('/requests/{id}', [ServiceController::class, 'adminShow'])->name('requests.show');
         Route::put('/requests/{id}', [ServiceController::class, 'adminUpdate'])->name('requests.update');
+
+        // Error Logs
+        Route::get('/logs', [App\Http\Controllers\ErrorLogController::class, 'index'])->name('logs.index');
     });
 });
 

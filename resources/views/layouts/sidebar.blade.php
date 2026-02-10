@@ -37,6 +37,11 @@
                 <span class="nav-text">Hot-spot/Panel Burnt</span>
             </a>
         </div>
+        <a href="{{ route('admin.logs.index') }}" class="nav-item {{ request()->routeIs('admin.logs.index') ? 'active' : '' }}"
+            data-bs-toggle="tooltip" data-bs-placement="right" title="Error Logs">
+            <i class="bi bi-bug"></i>
+            <span class="nav-text">Error Logs</span>
+        </a>
     </nav>
     <div class="sidebar-footer">
         <div class="footer-content">
