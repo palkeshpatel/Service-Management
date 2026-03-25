@@ -134,6 +134,42 @@ class ServiceController extends Controller
         return view('admin.requests.show', compact('request'));
     }
 
+    public function adminDownloadAttachment(Request $httpRequest, $id)
+    {
+        $path = $httpRequest->query('path');
+        if (! is_string($path) || $path === '' || str_contains($path, '..')) {
+            abort(404);
+        }
+
+        $serviceRequest = ServiceRequest::findOrFail($id);
+        $originalName = $this->findOriginalNameForAttachmentPath($serviceRequest, $path);
+        if ($originalName === null) {
+            abort(404);
+        }
+
+        if (! Storage::disk('public')->exists($path)) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->download($path, $originalName);
+    }
+
+    private function findOriginalNameForAttachmentPath(ServiceRequest $serviceRequest, string $path): ?string
+    {
+        $attachments = $serviceRequest->attachments ?? [];
+        foreach ($attachments as $attachment) {
+            $isArray = isset($attachment[0]) && is_array($attachment[0]);
+            $items = $isArray ? $attachment : [$attachment];
+            foreach ($items as $item) {
+                if (isset($item['path']) && $item['path'] === $path) {
+                    return $item['original_name'] ?? basename($path);
+                }
+            }
+        }
+
+        return null;
+    }
+
     public function adminUpdate(Request $request, $id)
     {
         $serviceRequest = ServiceRequest::findOrFail($id);

@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
             return redirect()->route('admin.requests.index');
         });
         Route::get('/requests', [ServiceController::class, 'adminIndex'])->name('requests.index');
+        Route::get('/requests/{id}/attachment', [ServiceController::class, 'adminDownloadAttachment'])->name('requests.attachment.download');
         Route::get('/requests/{id}', [ServiceController::class, 'adminShow'])->name('requests.show');
         Route::put('/requests/{id}', [ServiceController::class, 'adminUpdate'])->name('requests.update');
 

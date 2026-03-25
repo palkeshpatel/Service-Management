@@ -137,18 +137,28 @@
                         </div>
                         <div class="small fw-bold mb-1">{{ ucfirst(str_replace('_', ' ', $field)) }}</div>
                         <div class="small text-muted mb-2">{{ $item['original_name'] ?? 'Video' }}</div>
-                        <a href="{{ asset('storage/' . $item['path']) }}" target="_blank" class="btn btn-sm btn-primary">
-                            <i class="bi bi-download me-1"></i>Download
-                        </a>
+                        <div class="d-flex flex-column gap-1">
+                            <a href="{{ asset('storage/' . $item['path']) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">
+                                <i class="bi bi-box-arrow-up-right me-1"></i>View
+                            </a>
+                            <a href="{{ route('admin.requests.attachment.download', ['id' => $request->id, 'path' => $item['path']]) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-download me-1"></i>Download
+                            </a>
+                        </div>
                     </div>
                 @else
                     <div class="attachment-item">
                         <img src="{{ asset('storage/' . $item['path']) }}" alt="{{ $field }}" class="attachment-preview" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'150\'%3E%3Crect fill=\'%23ddd\' width=\'200\' height=\'150\'/%3E%3Ctext fill=\'%23999\' font-family=\'sans-serif\' font-size=\'14\' dy=\'10.5\' font-weight=\'bold\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\'%3EImage%3C/text%3E%3C/svg%3E'">
                         <div class="small fw-bold mb-1">{{ ucfirst(str_replace('_', ' ', $field)) }}</div>
                         <div class="small text-muted mb-2">{{ $item['original_name'] ?? 'Image' }}</div>
-                        <a href="{{ asset('storage/' . $item['path']) }}" target="_blank" class="btn btn-sm btn-primary">
-                            <i class="bi bi-download me-1"></i>Download
-                        </a>
+                        <div class="d-flex flex-column gap-1">
+                            <a href="{{ asset('storage/' . $item['path']) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">
+                                <i class="bi bi-box-arrow-up-right me-1"></i>View
+                            </a>
+                            <a href="{{ route('admin.requests.attachment.download', ['id' => $request->id, 'path' => $item['path']]) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-download me-1"></i>Download
+                            </a>
+                        </div>
                     </div>
                 @endif
             @endforeach
